@@ -81,7 +81,6 @@ public class RobotContainer {
                 joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));
 
     }
-
     public OI getOI() {
         return joysticks;
     }
