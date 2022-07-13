@@ -95,6 +95,11 @@ public class SwerveModule {
         // route to the setpoint - this function tells the PID it is on a circle from 0
         // to 2*Pi
         angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+        SmartDashboard.putNumber(name + " PID value P",  angleController.getP());
+        SmartDashboard.putNumber(name + " PID value I",  angleController.getI());
+        SmartDashboard.putNumber(name + " PID value D",  angleController.getD());
+
     }
 
     /**
@@ -147,7 +152,10 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
             SmartDashboard.putNumber(name + " Distance", getDistance(false));
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber(name + " Raw Rotation", rotationEncoder.getAbsolutePosition());
+            SmartDashboard.putNumber(name + " Raw rotation", rotationEncoder.getAbsolutePosition());
+            angleController.setP(SmartDashboard.getNumber(name + " PID value P",  angleController.getP()));
+            angleController.setI(SmartDashboard.getNumber(name + " PID value I",  angleController.getI()));
+            angleController.setD(SmartDashboard.getNumber(name + " PID value D",  angleController.getD()));
         }
 
         return false;

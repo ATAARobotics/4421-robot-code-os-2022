@@ -14,6 +14,7 @@ public class Constants {
     // Disables some safeties and enables logging of warnings we expect and know
     // about during development
     public static final boolean COMP_MODE = false;
+    public static final boolean UsingPigeon = false;
 
     /**
      * Identify which robot this is using Preferences on the rio. This is used to
@@ -28,8 +29,8 @@ public class Constants {
     public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
 
     // Measurements are in meters
-    public static final double WHEELBASE = COMP_BOT ? 0.65 : 0.65;
-    public static final double TRACK_WIDTH = COMP_BOT ? 0.47 : 0.52;
+    public static final double WHEELBASE = COMP_BOT ? 0.7112 : 0.7112;
+    public static final double TRACK_WIDTH = COMP_BOT ? 0.5334 : 0.5334;
 
     // Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 1.25;

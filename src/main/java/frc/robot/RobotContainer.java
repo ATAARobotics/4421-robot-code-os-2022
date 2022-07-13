@@ -28,7 +28,7 @@ public class RobotContainer {
     public Translation2d initialPosition = new Translation2d(0, 0);
 
     // Create hardware objects
-    private Pigeon pigeon;
+    private Gyro gyro;
     private final OI joysticks = new OI();
 
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
@@ -52,10 +52,10 @@ public class RobotContainer {
     public RobotContainer() {
         // Hardware-based objects
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        pigeon = new Pigeon();
+        gyro = new Gyro();
         AutoPaths.CreateAutoPaths();
 
-        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "rio");
+        m_swerveDriveSubsystem = new SwerveDriveSubsystem(gyro,  initialPosition, "rio");
 
         m_swerveDriveSubsystem.setBrakes(false);
 

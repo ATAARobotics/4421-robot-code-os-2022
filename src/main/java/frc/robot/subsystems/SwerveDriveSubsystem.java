@@ -10,14 +10,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Pigeon;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import frc.robot.SwerveOdometry;
-
+import frc.robot.Gyro;
 public class SwerveDriveSubsystem extends SubsystemBase {
 
-    private Pigeon pigeon;
+    private Gyro gyro;
 
     // Whether the swerve should be field-oriented
     boolean fieldOriented = false;
@@ -53,8 +52,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * @param gyro        The gyro object running on the robot
      * @param initialPose The initial pose that the robot is in
      */
-    public SwerveDriveSubsystem(Pigeon pigeon, Translation2d initialPosition, String bus) {
-        this.pigeon = pigeon;
+    public SwerveDriveSubsystem(Gyro gyro, Translation2d initialPosition, String bus) {
+        this.gyro = gyro;
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
         TalonFX[] driveMotors = { new TalonFX(Constants.DRIVE_MOTORS_ID[0], bus),
                 new TalonFX(Constants.DRIVE_MOTORS_ID[1], bus), new TalonFX(Constants.DRIVE_MOTORS_ID[2], bus),
@@ -104,7 +103,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        pigeon.update();
+
+        if (Constants.UsingPigeon) {
+            gyro.update();
+        }
         double gyroAngle = getHeading();
 
         if (fieldOriented) {
@@ -150,7 +152,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         if (!safetyDisable) {
             if (Constants.REPORTING_DIAGNOSTICS) {
-                SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
+                SmartDashboard.putNumber("Gyro Value", gyro.getAngle());
             }
 
             // Execute functions on each swerve module
@@ -174,7 +176,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             // Update the current pose with the latest velocities, angle, and a timestamp
             boolean useOdometry = false;
             if (useOdometry) {
-                pose = odometry.update(getXVelocity(), getYVelocity(), pigeon.getYaw(), Timer.getFPGATimestamp());
+                pose = odometry.update(getXVelocity(), getYVelocity(), gyro.getAngle(), Timer.getFPGATimestamp());
             }
 
             if (Constants.REPORTING_DIAGNOSTICS) {
@@ -206,7 +208,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setFieldOriented(boolean fieldOriented, double currentYaw) {
         this.fieldOriented = fieldOriented;
-        pigeon.setYaw(currentYaw);
+        gyro.setYaw(currentYaw);
     }
 
     /**
@@ -220,14 +222,21 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * Gets the robot heading
      */
     public double getHeading() {
-        return pigeon.getYaw();
+        return gyro.getAngle();
     }
 
     /**
      * Resets the robot heading
      */
     public void resetHeading() {
-        pigeon.setYaw(0);
+        if (Constants.UsingPigeon) 
+        {
+            gyro.setYaw(0);
+        } 
+        else
+        {
+            gyro.reset();
+        }
     }
 
     /**
