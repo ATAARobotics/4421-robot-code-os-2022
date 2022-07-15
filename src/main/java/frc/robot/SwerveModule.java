@@ -42,7 +42,7 @@ public class SwerveModule {
     private double reverseMultiplier = 1.0;
 
     // Create a PID for controlling the angle of the module
-    private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
+    private PIDController angleController = new PIDController(0, 0.0, 0.0);
 
     // Create a PID for controlling the velocity of the module
     private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
@@ -112,6 +112,7 @@ public class SwerveModule {
         double rotationVelocity = 0.0;
         if (driveVelocity != 0.0 && !cancelAllMotion) {
             // Get the rotation velocity
+            SmartDashboard.putNumber(name + " Angle", getAngle());
             rotationVelocity = angleController.calculate(getAngle());
             // Clamp the value (not scale because faster is okay, it's on a PID)
             rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
@@ -120,6 +121,7 @@ public class SwerveModule {
             }
             // Set the rotation motor velocity based on the next value from the angle PID,
             // clamped to not exceed the maximum speed
+            SmartDashboard.putNumber(name + " Rot Vel", rotationVelocity);
             rotationMotor.set(ControlMode.PercentOutput, rotationVelocity);
 
             calculated = velocityController.calculate(getVelocity());
@@ -155,7 +157,7 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Raw rotation", rotationEncoder.getAbsolutePosition());
             angleController.setP(SmartDashboard.getNumber(name + " PID value P",  angleController.getP()));
             angleController.setI(SmartDashboard.getNumber(name + " PID value I",  angleController.getI()));
-            angleController.setD(SmartDashboard.getNumber(name + " PID value D",  angleController.getD()));
+            angleController.setD(SmartDashboard.getNumber(name + " PID valueD",  angleController.getD()));
         }
 
         return false;
