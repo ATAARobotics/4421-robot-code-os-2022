@@ -33,19 +33,6 @@ public class RobotContainer {
 
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
 
-    private boolean visionEnabled = false;
-    /*
-     * private boolean visionTargeting = false;
-     * private ProfiledPIDController visionPID = new ProfiledPIDController(0.9, 0,
-     * 0.001, new TrapezoidProfile.Constraints(RobotMap.MAXIMUM_ROTATIONAL_SPEED /
-     * 4, RobotMap.MAXIMUM_ROTATIONAL_ACCELERATION / 2));
-     * private double visionTarget = -999;
-     * private int targetedTicks = 0;
-     */
-
-    private double aimRotationSpeed = 0.25 * 0.7;
-    private double visionRotationVelocity;
-
     // Auto selector on SmartDashboard
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -55,7 +42,7 @@ public class RobotContainer {
         gyro = new Gyro();
         AutoPaths.CreateAutoPaths();
 
-        m_swerveDriveSubsystem = new SwerveDriveSubsystem(gyro,  initialPosition, "rio");
+        m_swerveDriveSubsystem = new SwerveDriveSubsystem(gyro, initialPosition, "rio");
 
         m_swerveDriveSubsystem.setBrakes(false);
 
@@ -71,16 +58,11 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        joysticks.aimLeft.whenHeld(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                joysticks::getYVelocity, () -> -aimRotationSpeed, joysticks::getSpeed));
-        joysticks.aimRight.whenHeld(
-                new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity,
-                        joysticks::getYVelocity, () -> aimRotationSpeed, joysticks::getSpeed));
-
-        new Trigger(() -> visionEnabled).whileActiveOnce(new DriveCommand(m_swerveDriveSubsystem,
-                joysticks::getXVelocity, joysticks::getYVelocity, () -> visionRotationVelocity));
-
+        joysticks.toggleFieldOriented.whenPressed(new InstantCommand(() -> {
+            m_swerveDriveSubsystem.setFieldOriented(!m_swerveDriveSubsystem.getFieldOriented(), 0);
+        }));
     }
+
     public OI getOI() {
         return joysticks;
     }

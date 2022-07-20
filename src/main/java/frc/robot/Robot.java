@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;
         }
-        robotContainer.getSwerveDriveSubsystem().setBrakes(false);
+        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
 
         if (!Constants.FIELD_ORIENTED) {
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);

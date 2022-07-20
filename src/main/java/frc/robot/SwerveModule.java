@@ -42,7 +42,7 @@ public class SwerveModule {
     private double reverseMultiplier = 1.0;
 
     // Create a PID for controlling the angle of the module
-    private PIDController angleController = new PIDController(0, 0.0, 0.0);
+    private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
 
     // Create a PID for controlling the velocity of the module
     private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
@@ -96,10 +96,7 @@ public class SwerveModule {
         // to 2*Pi
         angleController.enableContinuousInput(-Math.PI, Math.PI);
 
-        SmartDashboard.putNumber(name + " PID value P",  angleController.getP());
-        SmartDashboard.putNumber(name + " PID value I",  angleController.getI());
-        SmartDashboard.putNumber(name + " PID value D",  angleController.getD());
-
+        this.rotationMotor.setInverted(true);
     }
 
     /**
@@ -155,9 +152,6 @@ public class SwerveModule {
             SmartDashboard.putNumber(name + " Distance", getDistance(false));
             SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
             SmartDashboard.putNumber(name + " Raw rotation", rotationEncoder.getAbsolutePosition());
-            angleController.setP(SmartDashboard.getNumber(name + " PID value P",  angleController.getP()));
-            angleController.setI(SmartDashboard.getNumber(name + " PID value I",  angleController.getI()));
-            angleController.setD(SmartDashboard.getNumber(name + " PID valueD",  angleController.getD()));
         }
 
         return false;

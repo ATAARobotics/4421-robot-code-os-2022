@@ -11,18 +11,18 @@ public class Gyro {
     private double offset;
     private Pigeon2 pigeon;
     private double currentYaw = 0.0;
+
     /**
      * Resets the navX reading to be straight ahead
      */
     public Gyro() {
 
-        if (Constants.UsingPigeon) 
-        {
+        if (Constants.USING_PIGEON) {
             pigeon = new Pigeon2(Constants.PIGEON_ID, "rio");
 
             // Mount direction settings - (forward, up) as according to the pigeon's casing
-            pigeon.configMountPose(AxisDirection.NegativeZ, AxisDirection.PositiveY);
-    
+            pigeon.configMountPose(AxisDirection.PositiveX, AxisDirection.PositiveZ);
+
             // CALIBRATION OF PIGEON (attempt to complete all steps quickly):
             // 1. Drive the robot flush with a flat surface
             // 2. Restart the robot code or redeploy
@@ -39,11 +39,9 @@ public class Gyro {
             // with a value from step 5 that is very close to half the value from step 7.
             // PUT YOUR ERROR VALUE IN HERE:
             pigeon.configYAxisGyroError(3.5);
-    
+
             pigeon.setYaw(0);
-        }
-        else 
-        {
+        } else {
             try {
                 // Initializes the navX object on the roboRIO's MXP port and resets it
                 navX = new AHRS(SPI.Port.kMXP);
@@ -55,7 +53,7 @@ public class Gyro {
             navX.calibrate();
         }
     }
-    
+
     public void reset() {
         navX.reset();
     }
@@ -68,31 +66,28 @@ public class Gyro {
      * Gets the value from the navX, measured in radians from -Pi to Pi
      */
     public double getAngle() {
-        if (navX != null) 
-        {
+        if (navX != null) {
             double angle = navX.getYaw();
 
-            //Convert to radians
+            // Convert to radians
             angle = Math.toRadians(angle) + offset;
-    
-            //Offset by Pi to find values in the wrong half of the circle
+
+            // Offset by Pi to find values in the wrong half of the circle
             angle += Math.PI;
-    
-            //Wrap angle at 2*Pi
+
+            // Wrap angle at 2*Pi
             angle %= 2.0 * Math.PI;
-    
-            //Ensure the value is not negative
+
+            // Ensure the value is not negative
             if (angle < 0) {
                 angle += 2.0 * Math.PI;
             }
-    
-            //Undo the offset
+
+            // Undo the offset
             angle -= Math.PI;
 
             return angle;
-        } 
-        else
-        {
+        } else {
             return currentYaw;
         }
 
@@ -104,15 +99,15 @@ public class Gyro {
             double yaw = -pigeon.getYaw();
 
             yaw *= Math.PI / 180.0;
-    
+
             yaw %= Math.PI * 2;
-    
+
             yaw += Math.PI * 3;
-    
+
             yaw %= Math.PI * 2;
-    
+
             yaw -= Math.PI;
-    
+
             currentYaw = yaw;
         }
     }

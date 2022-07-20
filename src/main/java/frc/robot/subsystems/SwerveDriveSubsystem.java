@@ -14,6 +14,7 @@ import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import frc.robot.SwerveOdometry;
 import frc.robot.Gyro;
+
 public class SwerveDriveSubsystem extends SubsystemBase {
 
     private Gyro gyro;
@@ -73,7 +74,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[2], bus), Constants.ANGLE_OFFSET[2], true,
                 Constants.TICKS_PER_METER[2], 2, "Rear Left");
         SwerveModule rearRightModule = new SwerveModule(driveMotors[3], rotationMotors[3],
-                new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], false,
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], true,
                 Constants.TICKS_PER_METER[3], 3, "Rear Right");
 
         // Put the swerve modules in an array so we can process them easier
@@ -104,7 +105,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if (Constants.UsingPigeon) {
+        if (Constants.USING_PIGEON) {
             gyro.update();
         }
         double gyroAngle = getHeading();
@@ -229,12 +230,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * Resets the robot heading
      */
     public void resetHeading() {
-        if (Constants.UsingPigeon) 
-        {
+        if (Constants.USING_PIGEON) {
             gyro.setYaw(0);
-        } 
-        else
-        {
+        } else {
             gyro.reset();
         }
     }

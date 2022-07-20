@@ -14,23 +14,14 @@ public class Constants {
     // Disables some safeties and enables logging of warnings we expect and know
     // about during development
     public static final boolean COMP_MODE = false;
-    public static final boolean UsingPigeon = true;
-
-    /**
-     * Identify which robot this is using Preferences on the rio. This is used to
-     * get things like different ticks per meter, offsets, and dimensions.
-     * If, for some reason you need to set this, you can put the following commented
-     * line into the Robot class' constructor:
-     * Preferences.setBoolean("compBot", *VALUE HERE*);
-     */
-    private static final boolean COMP_BOT = Preferences.getBoolean("compBot", false);
+    public static final boolean USING_PIGEON = true;
 
     // Enforces a maximum safe speed of the motors. This may cause steering issues.
     public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
 
     // Measurements are in meters
-    public static final double WHEELBASE = COMP_BOT ? 0.67945 : 0.67945;
-    public static final double TRACK_WIDTH = COMP_BOT ? 0.4953 : 0.4953;
+    public static final double WHEELBASE = 0.67945;
+    public static final double TRACK_WIDTH = 0.4953;
 
     // Maximum linear speed is in meters/second
     public static final double MAXIMUM_SPEED = 1.25;
@@ -44,12 +35,9 @@ public class Constants {
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
 
     // Swerve offset
-    public static final double[] ANGLE_OFFSET = COMP_BOT ? new double[] {
-            2.1138, -0.3758, -2.1506, 0.4740
-    }
-            : new double[] {
-                    0, 0, 0, 0
-            };
+    public static final double[] ANGLE_OFFSET = new double[] {
+            0.3528, -3.0526, -2.4252, -2.5863
+    };
 
     /*
      * CAN ID and CAN Bus
@@ -63,7 +51,6 @@ public class Constants {
     public static final int[] ROTATION_ENCODERS_ID = { 9, 10, 11, 12 };
     public static final int PIGEON_ID = 20;
 
-
     /*
      * CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
      * public static final String SPARK_MOTOR_BUS = "rio";
@@ -71,23 +58,16 @@ public class Constants {
 
     // PWM Ports
 
-
     // Sensor Ports
 
     // Solenoid Ports
 
-
-
     // Sensor config
- 
 
     // Drive encoder ticks per meter
-    public static final double[] TICKS_PER_METER = COMP_BOT ? new double[] {
+    public static final double[] TICKS_PER_METER = new double[] {
             43423.315, 45649.9148, 45547.4436, 45648.5925
-    }
-            : new double[] {
-                    0, 0, 0, 0
-            };
+    };
 
     // DRIVER CONFIG
     // Dead zones of each joystick - Measured from 0 to 1. This should always be at
