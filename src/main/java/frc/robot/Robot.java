@@ -60,6 +60,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         Blackbox.getInstance().startLog();
+        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
+        robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 0);
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
         m_autonomousCommand.schedule();
     }

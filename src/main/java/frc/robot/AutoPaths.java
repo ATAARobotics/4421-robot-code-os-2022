@@ -19,177 +19,32 @@ public class AutoPaths {
      * private Trajectory pathName;
      */
 
-    private static Trajectory quadrant2EdgeBall5;
-    private static Trajectory quadrant2EdgeBall5RED;
-    private static Trajectory ball5Ball4;
-    private static Trajectory ball5Ball4RED;
-    private static Trajectory ball4Ball13;
-    private static Trajectory ball4Ball13RED;
-    private static Trajectory quadrant1LeftBall2;
-    private static Trajectory ball2Launchpad;
-    private static Trajectory ball2Ball1;
-    private static Trajectory ball1Starve;
-    private static Trajectory starveLaunchpad;
-    private static Trajectory ball2Quadrant1Line;
-    private static Trajectory ball2Quadrant1Wall;
-    private static Trajectory leaveTarmac;
+    private static Trajectory test1;
+    private static Trajectory test2;
 
     public static void CreateAutoPaths() {
 
-        quadrant2EdgeBall5 = TrajectoryBuilder(
+        test1 = TrajectoryBuilder(
                 Math.PI / 2,
                 Arrays.asList(
-                        new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
-                        new Translation2d(meterConversion(7.75), meterConversion(7.6447))),
-                Math.PI / 2 + Math.PI / 12);
-        quadrant2EdgeBall5RED = TrajectoryBuilder(
+                        new Translation2d(meterConversion(6), meterConversion(5.5)),
+                        new Translation2d(meterConversion(7), meterConversion(5.5))),
+                Math.PI / 2);
+
+        test2 = TrajectoryBuilder(
                 Math.PI / 2,
                 Arrays.asList(
-                        new Translation2d(meterConversion(6.4460), meterConversion(7.5447)),
-                        new Translation2d(meterConversion(7.75), meterConversion(7.1447))),
-                Math.PI / 2 + Math.PI / 12);
-
-        ball5Ball4 = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(7.75), meterConversion(7.6447)),
-                        new Translation2d(meterConversion(6.4), meterConversion(6.5)),
-                        new Translation2d(meterConversion(6.4), meterConversion(5))),
-                13 * Math.PI / 16 + 0.0524);
-        ball5Ball4RED = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(7.75), meterConversion(7.1447)),
-                        new Translation2d(meterConversion(6.4), meterConversion(6.5)),
-                        new Translation2d(meterConversion(6.4), meterConversion(5))),
-                13 * Math.PI / 16 + 0.0524);
-
-        ball4Ball13 = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(6.4), meterConversion(5)),
-                        new Translation2d(meterConversion(7.5), meterConversion(1.8)),
-                        new Translation2d(meterConversion(6), meterConversion(1.2))),
+                        new Translation2d(meterConversion(7), meterConversion(5.5)),
+                        new Translation2d(meterConversion(7), meterConversion(6.5))),
                 Math.PI);
-        ball4Ball13RED = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(6.4), meterConversion(5)),
-                        new Translation2d(meterConversion(7.5), meterConversion(2.0)),
-                        new Translation2d(meterConversion(6), meterConversion(1.4))),
-                Math.PI);
-
-        quadrant1LeftBall2 = TrajectoryBuilder(
-                -2.5724,
-                Arrays.asList(
-                        new Translation2d(meterConversion(2.9323), meterConversion(6.3812)),
-                        new Translation2d(meterConversion(2.0930), meterConversion(5.0693))),
-                -2.5724);
-
-        ball2Launchpad = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
-                        new Translation2d(meterConversion(1.0), meterConversion(4.0))),
-                Math.PI / 4);
-
-        ball2Ball1 = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
-                        new Translation2d(meterConversion(1.0), meterConversion(6.0))),
-                -Math.PI / 4);
-
-        ball1Starve = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(1.0), meterConversion(6.0)),
-                        new Translation2d(meterConversion(1.0), meterConversion(4.0))),
-                -Math.PI);
-
-        starveLaunchpad = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(1.0), meterConversion(4.0)),
-                        new Translation2d(meterConversion(0.7), meterConversion(4.5))),
-                Math.PI / 4);
-
-        ball2Quadrant1Line = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
-                        new Translation2d(meterConversion(2.8228), meterConversion(6.2199))),
-                -2.5724);
-
-        ball2Quadrant1Wall = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
-                        new Translation2d(meterConversion(3.8017), meterConversion(7.0141))),
-                -2.7751);
-
-        leaveTarmac = TrajectoryBuilder(
-                0,
-                Arrays.asList(
-                        new Translation2d(meterConversion(0), meterConversion(0)),
-                        new Translation2d(meterConversion(0), meterConversion(1.25))),
-                0);
     }
 
-    public static Trajectory getQuadrant2EdgeBall5() {
-        return quadrant2EdgeBall5;
+    public static Trajectory getTest1() {
+        return test1;
     }
 
-    public static Trajectory getQuadrant2EdgeBall5RED() {
-        return quadrant2EdgeBall5RED;
-    }
-
-    public static Trajectory getBall5Ball4() {
-        return ball5Ball4;
-    }
-
-    public static Trajectory getBall5Ball4RED() {
-        return ball5Ball4RED;
-    }
-
-    public static Trajectory getBall4Ball13() {
-        return ball4Ball13;
-    }
-
-    public static Trajectory getBall4Ball13RED() {
-        return ball4Ball13RED;
-    }
-
-    public static Trajectory getQuadrant1LeftBall2() {
-        return quadrant1LeftBall2;
-    }
-
-    public static Trajectory getBall2Launchpad() {
-        return ball2Launchpad;
-    }
-
-    public static Trajectory getBall2Ball1() {
-        return ball2Ball1;
-    }
-
-    public static Trajectory getBall1Starve() {
-        return ball1Starve;
-    }
-
-    public static Trajectory getStarveLaunchpad() {
-        return starveLaunchpad;
-    }
-
-    public static Trajectory getBall2Quadrant1Line() {
-        return ball2Quadrant1Line;
-    }
-
-    public static Trajectory getBall2Quadrant1Wall() {
-        return ball2Quadrant1Wall;
-    }
-
-    public static Trajectory getLeaveTarmac() {
-        return leaveTarmac;
+    public static Trajectory getTest2() {
+        return test2;
     }
 
     private static Trajectory TrajectoryBuilder(double rotationOffset, List<Translation2d> waypoints,

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 //swerve commands and subsystems
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.auto.PracticeAuto;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 // import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -49,7 +50,7 @@ public class RobotContainer {
         m_swerveDriveSubsystem.setDefaultCommand(
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
                         joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
-
+        autoChooser.addOption("test", new PracticeAuto(m_swerveDriveSubsystem));
         autoChooser.addOption("DO NOTHING", new WaitCommand(0));
         SmartDashboard.putData(autoChooser);
         LiveWindow.disableAllTelemetry();
