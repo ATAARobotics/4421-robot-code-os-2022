@@ -12,6 +12,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 class OI {
 
     private BetterJoystick driveStick = new BetterJoystick(0, 1);
+    private BetterJoystick gunnerStick = new BetterJoystick(1, 0);
+
+    public JoystickButton ArmUp;
+    public JoystickButton ArmDown;
+    public JoystickButton ElevatorUp;
+    public JoystickButton ElevatorDown;
 
     private double xVelocity;
     private double yVelocity;
@@ -28,7 +34,7 @@ class OI {
             bindings.load(input);
 
             driveStick.configureBindings(bindings);
-
+            gunnerStick.configureBindings(bindings);
             input.close();
         } catch (FileNotFoundException e) {
             DriverStation.reportError("Button bindings file not found!", false);
@@ -37,6 +43,11 @@ class OI {
         }
 
         toggleFieldOriented = driveStick.getWPIJoystickButton("ToggleFieldOriented");
+        // Set up command-based stuff
+        ArmUp = gunnerStick.getWPIJoystickButton("ArmUp");
+        ArmDown = gunnerStick.getWPIJoystickButton("ArmDown");
+        ElevatorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
+        ElevatorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
     }
 
     public void checkInputs() {

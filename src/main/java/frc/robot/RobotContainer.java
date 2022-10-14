@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 //swerve commands and subsystems
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.auto.PracticeAuto;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
 // import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -33,7 +35,8 @@ public class RobotContainer {
     private final OI joysticks = new OI();
 
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
-
+    private final ArmSubsystem m_armSubsystem;
+    private final ElevatorSubsystem m_elevatorSubsystem;
     // Auto selector on SmartDashboard
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -44,6 +47,8 @@ public class RobotContainer {
         AutoPaths.CreateAutoPaths();
 
         m_swerveDriveSubsystem = new SwerveDriveSubsystem(gyro, initialPosition, "rio");
+        m_armSubsystem = new ArmSubsystem();
+        m_elevatorSubsystem = new ElevatorSubsystem();
 
         m_swerveDriveSubsystem.setBrakes(false);
 
@@ -62,6 +67,29 @@ public class RobotContainer {
         joysticks.toggleFieldOriented.whenPressed(new InstantCommand(() -> {
             m_swerveDriveSubsystem.setFieldOriented(!m_swerveDriveSubsystem.getFieldOriented(), 0);
         }));
+        joysticks.ArmUp.whenActive(
+            new RunCommand(m_armSubsystem::armUp, m_armSubsystem)
+          ).whenInactive(
+            new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
+          );
+      
+          joysticks.ArmDown.whenActive(
+            new RunCommand(m_armSubsystem::armDown, m_armSubsystem)
+          ).whenInactive(
+            new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
+          );
+      
+          joysticks.ElevatorUp.whenActive(
+            new RunCommand(m_elevatorSubsystem::elevatorUp, m_elevatorSubsystem)
+          ).whenInactive(
+            new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
+          );
+      
+          joysticks.ElevatorDown.whenActive(
+            new RunCommand(m_elevatorSubsystem::elevatorDown, m_elevatorSubsystem)
+          ).whenInactive(
+            new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
+          );
     }
 
     public OI getOI() {
