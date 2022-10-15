@@ -18,6 +18,8 @@ class OI {
     public JoystickButton ArmDown;
     public JoystickButton ElevatorUp;
     public JoystickButton ElevatorDown;
+    public JoystickButton ElevatorOverride;
+    public JoystickButton ElevatorReset;
 
     private double xVelocity;
     private double yVelocity;
@@ -48,6 +50,8 @@ class OI {
         ArmDown = gunnerStick.getWPIJoystickButton("ArmDown");
         ElevatorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         ElevatorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
+        ElevatorOverride = driveStick.getWPIJoystickButton("ElevatorOverride");
+        ElevatorReset = driveStick.getWPIJoystickButton("ElevatorReset");
     }
 
     public void checkInputs() {

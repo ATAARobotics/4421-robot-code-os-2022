@@ -15,45 +15,43 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Elevator Encoder", ElevatorEncoder.getPosition());
-        if(elevatorState == 0){
-            ElevatorMotor.set(0);
-        }
-        else if (elevatorState == 1){
-            System.out.println("hello");
-            if(ElevatorEncoder.getPosition() <= 297){
-                ElevatorMotor.set(0.2);
+
+        if (elevatorState == 1) {    
+            if (ElevatorEncoder.getPosition() >= 233) {
+                ElevatorMotor.stopMotor();
+            }else {
+                ElevatorMotor.set(0.25);
             }
-            else{
-                ElevatorMotor.set(0);
-                elevatorState = 0;
+        } else if(elevatorState == 2) {
+            if (ElevatorEncoder.getPosition() <= 0) {
+                ElevatorMotor.stopMotor();
+            } else {
+                ElevatorMotor.set(-0.25);
             }
-        }
-        else if (elevatorState == 2){
-            if(ElevatorEncoder.getPosition() >= 10){
-                ElevatorMotor.set(-0.2);
-            }
-            else{
-                elevatorState = 0;
-            }
-        }
-        else {
+        } else if(elevatorState == 3) {
+            ElevatorMotor.set(-0.25);
+        } else {
             ElevatorMotor.set(0);
         }
     }
 
+
     public void elevatorUp() {
-        ElevatorMotor.set(0.25);
+        elevatorState = 1;
     }
     public void elevatorDown() {
-        ElevatorMotor.set(-0.25);
+        elevatorState = 2;
     }
     public void stop(){
         elevatorState = 0;
         ElevatorMotor.set(0);
     }
-
-    public void zeroElevator(){
-        ElevatorEncoder.setPosition(300);
+    public void elevatorOverride() {
+        elevatorState = 3;
     }
+    public void elevatorReset() {
+        ElevatorEncoder.setPosition(0);
+    }
+
     
 }

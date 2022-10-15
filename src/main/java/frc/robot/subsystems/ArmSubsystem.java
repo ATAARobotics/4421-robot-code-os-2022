@@ -19,10 +19,10 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void armUp() {
-        ArmMotor.set(ControlMode.PercentOutput, 0.5);
+        ArmMotor.set(ControlMode.PercentOutput, 1);
     }
     public void armDown() {
-        ArmMotor.set(ControlMode.PercentOutput, -0.5);
+        ArmMotor.set(ControlMode.PercentOutput, -1);
     }
     public void stop(){
         ArmMotor.set(ControlMode.PercentOutput, 0);

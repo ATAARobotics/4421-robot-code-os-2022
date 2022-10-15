@@ -90,6 +90,18 @@ public class RobotContainer {
           ).whenInactive(
             new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
           );
+
+          joysticks.ElevatorOverride.whenActive(
+            new RunCommand(m_elevatorSubsystem::elevatorOverride, m_elevatorSubsystem)
+          ).whenInactive(
+            new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
+          );
+          joysticks.ElevatorReset.whenActive(
+            new RunCommand(m_elevatorSubsystem::elevatorReset, m_elevatorSubsystem)
+          ).whenInactive(
+            new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
+          );
+
     }
 
     public OI getOI() {
