@@ -69,9 +69,13 @@ public class Constants {
             43423.315, 45649.9148, 45547.4436, 45648.5925
     };
 
-    public static final int ArmMotor = 21;
+    public static final int ArmMotorID = 21;
     public static final int ElevatorMotor = 22;
-
+    public static final int ArmCANCoderID = 23;
+    // Maximum arm rotation (in degrees)
+    public static final double ArmMaxAngle = 180;
+    // Minimum arm rotation (in degrees)
+    public static final double ArmMinAngle = 10;
     // DRIVER CONFIG
     // Dead zones of each joystick - Measured from 0 to 1. This should always be at
     // least 0.1.
@@ -89,4 +93,5 @@ public class Constants {
     // Set this to true if you want to visualize the robot's movement during auto -
     // talk to Jacob if you have no idea what this does
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
+
 }
