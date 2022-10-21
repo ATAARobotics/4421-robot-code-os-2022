@@ -21,7 +21,10 @@ public class ArmSubsystem extends SubsystemBase {
     public void periodic() {
 
     }
-    
+    public void forcearmUp(){
+        ArmMotor.set(ControlMode.PercentOutput, 1);
+        System.out.println("hello");
+    }
     public void armUp() {
         SmartDashboard.putNumber("cancoder position", ArmCANCoder.getAbsolutePosition());
         if (ArmCANCoder.getAbsolutePosition() < Constants.ArmMaxAngle) {

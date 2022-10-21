@@ -69,8 +69,16 @@ public class Constants {
             43423.315, 45649.9148, 45547.4436, 45648.5925
     };
 
-    public static final int ArmMotor = 21;
+    public static final int ArmMotorID = 21;
     public static final int ElevatorMotor = 22;
+
+    public static final int ArmCANCoderID = 23;
+    // Maximum arm rotation (in degrees)
+    public static final double ArmMaxAngle = 90;
+    // Minimum arm rotation (in degrees)
+    public static final double ArmMinAngle = 10;
+
+    public static final double ElevatorTop = 233;
 
     // DRIVER CONFIG
     // Dead zones of each joystick - Measured from 0 to 1. This should always be at

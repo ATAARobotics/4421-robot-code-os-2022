@@ -68,40 +68,43 @@ public class RobotContainer {
             m_swerveDriveSubsystem.setFieldOriented(!m_swerveDriveSubsystem.getFieldOriented(), 0);
         }));
         joysticks.ArmUp.whenActive(
-            new RunCommand(m_armSubsystem::armUp, m_armSubsystem)
+            new RunCommand(m_armSubsystem::forcearmUp, m_armSubsystem)
           ).whenInactive(
             new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
           );
       
-          joysticks.ArmDown.whenActive(
+        joysticks.ArmDown.whenActive(
             new RunCommand(m_armSubsystem::armDown, m_armSubsystem)
           ).whenInactive(
             new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
           );
       
-          joysticks.ElevatorUp.whenActive(
+        joysticks.ElevatorUp.whenActive(
             new RunCommand(m_elevatorSubsystem::elevatorUp, m_elevatorSubsystem)
           ).whenInactive(
             new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
           );
       
-          joysticks.ElevatorDown.whenActive(
+        joysticks.ElevatorDown.whenActive(
             new RunCommand(m_elevatorSubsystem::elevatorDown, m_elevatorSubsystem)
           ).whenInactive(
             new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
           );
 
-          joysticks.ElevatorOverride.whenActive(
+        joysticks.ElevatorOverride.whenActive(
             new RunCommand(m_elevatorSubsystem::elevatorOverride, m_elevatorSubsystem)
           ).whenInactive(
             new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
           );
-          joysticks.ElevatorReset.whenActive(
+
+        joysticks.ElevatorReset.whenActive(
             new RunCommand(m_elevatorSubsystem::elevatorReset, m_elevatorSubsystem)
           ).whenInactive(
             new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
           );
-
+          joysticks.ElevatorHalfwayPoint.whenActive(
+            new RunCommand(() -> m_elevatorSubsystem.setElevatorPostion(0.5), m_elevatorSubsystem)
+          );
     }
 
     public OI getOI() {
