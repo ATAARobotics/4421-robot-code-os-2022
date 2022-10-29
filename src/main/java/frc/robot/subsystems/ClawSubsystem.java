@@ -15,12 +15,16 @@ public class ClawSubsystem extends SubsystemBase {
 
     }
     public void clawReverse() {
+        System.out.println("closed");
+        arm.set(Value.kReverse);
         if (!clawClosed) {
             arm.set(Value.kReverse);
         }
         clawClosed = true;
     }
     public void clawForward() {
+        System.out.println("open");
+        arm.set(Value.kForward);
         if (clawClosed) {
             arm.set(Value.kForward);
         }
