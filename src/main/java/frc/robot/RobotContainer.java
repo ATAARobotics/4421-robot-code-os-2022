@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.auto.PracticeAuto;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
@@ -37,6 +38,7 @@ public class RobotContainer {
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final ArmSubsystem m_armSubsystem;
     private final ElevatorSubsystem m_elevatorSubsystem;
+    private final ClawSubsystem m_clawSubsystem;
     // Auto selector on SmartDashboard
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -49,6 +51,7 @@ public class RobotContainer {
         m_swerveDriveSubsystem = new SwerveDriveSubsystem(gyro, initialPosition, "rio");
         m_armSubsystem = new ArmSubsystem();
         m_elevatorSubsystem = new ElevatorSubsystem();
+        m_clawSubsystem = new ClawSubsystem();
 
         m_swerveDriveSubsystem.setBrakes(false);
 
@@ -105,6 +108,9 @@ public class RobotContainer {
           joysticks.ElevatorHalfwayPoint.whenActive(
             new RunCommand(() -> m_elevatorSubsystem.setElevatorPostion(0.5), m_elevatorSubsystem)
           );
+        
+        joysticks.toggleClaw
+          .toggleWhenPressed(new StartEndCommand(m_clawSubsystem::clawReverse, m_clawSubsystem::clawForward, m_clawSubsystem));
     }
 
     public OI getOI() {

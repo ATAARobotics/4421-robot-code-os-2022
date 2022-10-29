@@ -7,12 +7,16 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 class OI {
 
     private BetterJoystick driveStick = new BetterJoystick(0, 1);
     private BetterJoystick gunnerStick = new BetterJoystick(1, 0);
+
+    public JoystickButton toggleClaw;
 
     public JoystickButton ArmUp;
     public JoystickButton ArmDown;
@@ -59,8 +63,8 @@ class OI {
         ElevatorOverride = driveStick.getWPIJoystickButton("ElevatorOverride");
         ElevatorReset = driveStick.getWPIJoystickButton("ElevatorReset");
         ElevatorHalfwayPoint = driveStick.getWPIJoystickButton("ElevatorHalfwayPoint");
-        ClawOpen = driveStick.getWPIJoystickButton("ClawOpen");
-        ClawClosed = driveStick.getWPIJoystickButton("ClawClosed");
+        toggleClaw = gunnerStick.getWPIJoystickButton("ToggleClaw");
+        
     }
 
     public void checkInputs() {
@@ -99,5 +103,9 @@ class OI {
 
     public double getRotationVelocity() {
         return rotationVelocity;
+    }
+
+    public Trigger getToggleClaw() {
+        return toggleClaw;
     }
 }

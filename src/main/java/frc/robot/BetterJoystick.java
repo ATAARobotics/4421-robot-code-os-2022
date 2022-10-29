@@ -18,7 +18,6 @@ public class BetterJoystick extends GenericHID {
 
     /**
      * Creates a new BetterJoystick using the given joystick port.
-     * 
      * @param port    The joystick port that the controller to use is plugged into
      * @param joyType The type of joystick - Xbox=0, Joystick=1
      */
