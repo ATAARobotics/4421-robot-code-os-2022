@@ -71,12 +71,13 @@ public class Constants {
 
     public static final int ArmMotorID = 21;
     public static final int ElevatorMotor = 22;
+    public static final int ClawMotorID = 21;
 
     public static final int ArmCANCoderID = 23;
     // Maximum arm rotation (in degrees)
-    public static final double ArmMaxAngle = 90;
+    public static final double ArmMaxAngle = 200;
     // Minimum arm rotation (in degrees)
-    public static final double ArmMinAngle = 10;
+    public static final double ArmMinAngle = 5;
 
     public static final double ElevatorTop = 233;
 

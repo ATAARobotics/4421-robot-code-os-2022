@@ -16,36 +16,48 @@ import frc.robot.Constants;
 public class ArmSubsystem extends SubsystemBase {
     private VictorSPX ArmMotor = new VictorSPX(Constants.ArmMotorID);
     private CANCoder ArmCANCoder = new CANCoder(Constants.ArmCANCoderID);
-
+    private int armState = 0;
     @Override
     public void periodic() {
-
-    }
-    public void forcearmUp(){
-        ArmMotor.set(ControlMode.PercentOutput, 1);
-        System.out.println("hello");
+        SmartDashboard.putNumber("cancoder position", ArmCANCoder.getAbsolutePosition());
+        switch (armState){
+            case 1:
+                if (ArmCANCoder.getAbsolutePosition() < Constants.ArmMaxAngle) {
+                    ArmMotor.set(ControlMode.PercentOutput, 1);
+                }
+                else {
+                    ArmMotor.set(ControlMode.PercentOutput, 0);
+                }
+                break;
+            case 2:
+                if (ArmCANCoder.getAbsolutePosition() > Constants.ArmMinAngle) {
+                    ArmMotor.set(ControlMode.PercentOutput, -0.25);
+                }
+                else {
+                    ArmMotor.set(ControlMode.PercentOutput, 0);
+                }
+                break;
+            case 3:
+                ArmMotor.set(ControlMode.PercentOutput, 1);
+                break;
+            default:
+                ArmMotor.set(ControlMode.PercentOutput, 0);
+                break;
+        }
     }
     public void armUp() {
-        SmartDashboard.putNumber("cancoder position", ArmCANCoder.getAbsolutePosition());
-        if (ArmCANCoder.getAbsolutePosition() < Constants.ArmMaxAngle) {
-            ArmMotor.set(ControlMode.PercentOutput, -0.125);
-            
-        }
-        else {
-            ArmMotor.set(ControlMode.PercentOutput, 0);
-        }
+        armState = 1;
     }
     public void armDown() {
-        SmartDashboard.putNumber("cancoder position", ArmCANCoder.getAbsolutePosition());
-        if (ArmCANCoder.getAbsolutePosition() > Constants.ArmMinAngle) {
-            ArmMotor.set(ControlMode.PercentOutput, 0.125);
-        }
-        else {
-            ArmMotor.set(ControlMode.PercentOutput, 0);
-        }
+        armState = 2;
+    }
+    public void forceDown(){
+        armState = 3;
     }
     public void stop(){
-        SmartDashboard.putNumber("cancoder position", ArmCANCoder.getAbsolutePosition());
-        ArmMotor.set(ControlMode.PercentOutput, 0);
+        armState = 0;
+    }
+    public void EncoderReset(){
+        ArmCANCoder.setPosition(0);
     }
 }

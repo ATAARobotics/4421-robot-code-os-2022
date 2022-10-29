@@ -16,18 +16,21 @@ class OI {
 
     public JoystickButton ArmUp;
     public JoystickButton ArmDown;
+    public JoystickButton ArmOverride;
+    public JoystickButton ArmReset;
     public JoystickButton ElevatorUp;
     public JoystickButton ElevatorDown;
     public JoystickButton ElevatorOverride;
     public JoystickButton ElevatorReset;
     public JoystickButton ElevatorHalfwayPoint;
+    public JoystickButton ClawOpen;
+    public JoystickButton ClawClosed;
+    public JoystickButton toggleFieldOriented;
 
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
     private double speed;
-
-    public JoystickButton toggleFieldOriented;
 
     public OI() {
         // Configure the button bindings
@@ -49,11 +52,15 @@ class OI {
         // Set up command-based stuff
         ArmUp = gunnerStick.getWPIJoystickButton("ArmUp");
         ArmDown = gunnerStick.getWPIJoystickButton("ArmDown");
+        ArmOverride = driveStick.getWPIJoystickButton("ArmOverride");
+        ArmReset = driveStick.getWPIJoystickButton("ArmReset");
         ElevatorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         ElevatorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         ElevatorOverride = driveStick.getWPIJoystickButton("ElevatorOverride");
         ElevatorReset = driveStick.getWPIJoystickButton("ElevatorReset");
         ElevatorHalfwayPoint = driveStick.getWPIJoystickButton("ElevatorHalfwayPoint");
+        ClawOpen = driveStick.getWPIJoystickButton("ClawOpen");
+        ClawClosed = driveStick.getWPIJoystickButton("ClawClosed");
     }
 
     public void checkInputs() {
