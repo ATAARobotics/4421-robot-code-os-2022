@@ -61,7 +61,7 @@ public class Constants {
     // Sensor Ports
 
     // Solenoid Ports
-
+    public static final int[] CLAW_PNEUMATIC = { 6 , 7 }; // Change Later when claw is built
     // Sensor config
 
     // Drive encoder ticks per meter
