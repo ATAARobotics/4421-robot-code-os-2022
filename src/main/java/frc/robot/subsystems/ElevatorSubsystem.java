@@ -23,30 +23,30 @@ public class ElevatorSubsystem extends SubsystemBase {
             if (ElevatorEncoder.getPosition() >= Constants.ElevatorTop) {
                 ElevatorMotor.stopMotor();
             }else {
-                ElevatorMotor.set(0.25);
+                ElevatorMotor.set(1.0);
             }
         } else if(elevatorState == 2) {
             if (ElevatorEncoder.getPosition() <= 0 || ElevatorStop.get() == true) {
                 ElevatorMotor.stopMotor();
             } else {
-                ElevatorMotor.set(-0.25);
+                ElevatorMotor.set(-1.0);
             }
         } else if(elevatorState == 3) {
             if(ElevatorStop.get() == true){
                 ElevatorMotor.set(0);
             }{
-                ElevatorMotor.set(-0.25);
+                ElevatorMotor.set(-1.0);
             }
         } else if (elevatorState == 4){
             if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) + 0.5){
                 if (ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) + 3){
-                    ElevatorMotor.set(-0.25);
+                    ElevatorMotor.set(-1.0);
                 }else{
                     ElevatorMotor.set(-1);
                 }
             }else if(ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) - 0.5){
                 if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) - 3){
-                    ElevatorMotor.set(0.25);
+                    ElevatorMotor.set(1.0);
                 }else{
                     ElevatorMotor.set(1);
                 }

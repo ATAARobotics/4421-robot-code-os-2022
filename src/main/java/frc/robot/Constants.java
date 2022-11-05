@@ -70,6 +70,7 @@ public class Constants {
     };
 
     public static final int ArmMotorID = 21;
+    public static final int ArmMotorID2 = 24;
     public static final int ElevatorMotor = 22;
     public static final int ClawMotorID = 21;
 

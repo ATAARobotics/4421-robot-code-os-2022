@@ -212,51 +212,58 @@ public class BetterJoystick extends GenericHID {
 
         int buttonID;
         if (joyType == 0) {
-            switch (button) {
-                case "X":
-                    buttonID = 3;
-                    break;
-
-                case "Y":
-                    buttonID = 4;
-                    break;
-
-                case "A":
-                    buttonID = 1;
-                    break;
-
-                case "B":
-                    buttonID = 2;
-                    break;
-
-                case "LeftBumper":
-                    buttonID = 5;
-                    break;
-
-                case "RightBumper":
-                    buttonID = 6;
-                    break;
-
-                case "Start":
-                    buttonID = 8;
-                    break;
-
-                case "Back":
-                    buttonID = 7;
-                    break;
-
-                case "LeftJoystick":
-                    buttonID = 9;
-                    break;
-
-                case "RightJoystick":
-                    buttonID = 10;
-                    break;
-
-                default:
-                    DriverStation.reportError("There is no button with the name " + button, false);
-                    return new JoystickButton(this, 100);
+            if (button != null) {
+                switch (button) {
+                    case "X":
+                        buttonID = 3;
+                        break;
+    
+                    case "Y":
+                        buttonID = 4;
+                        break;
+    
+                    case "A":
+                        buttonID = 1;
+                        break;
+    
+                    case "B":
+                        buttonID = 2;
+                        break;
+    
+                    case "LeftBumper":
+                        buttonID = 5;
+                        break;
+    
+                    case "RightBumper":
+                        buttonID = 6;
+                        break;
+    
+                    case "Start":
+                        buttonID = 8;
+                        break;
+    
+                    case "Back":
+                        buttonID = 7;
+                        break;
+    
+                    case "LeftJoystick":
+                        buttonID = 9;
+                        break;
+    
+                    case "RightJoystick":
+                        buttonID = 10;
+                        break;
+    
+                    default:
+                        DriverStation.reportError("There is no button with the name " + button, false);
+                        return new JoystickButton(this, 100);
+                }
             }
+            else {
+                DriverStation.reportError("There is no button with the name " + button, false);
+                return new JoystickButton(this, 100);
+            }
+            
         } else if (joyType == 1) {
             buttonID = Integer.parseInt(button);
         } else {

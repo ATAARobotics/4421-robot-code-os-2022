@@ -15,6 +15,7 @@ import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
     private VictorSPX ArmMotor = new VictorSPX(Constants.ArmMotorID);
+    private VictorSPX ArmMotor2 = new VictorSPX(Constants.ArmMotorID2);
     private CANCoder ArmCANCoder = new CANCoder(Constants.ArmCANCoderID);
     private int armState = 0;
     @Override
@@ -24,24 +25,30 @@ public class ArmSubsystem extends SubsystemBase {
             case 1:
                 if (ArmCANCoder.getAbsolutePosition() < Constants.ArmMaxAngle) {
                     ArmMotor.set(ControlMode.PercentOutput, 1);
+                    ArmMotor2.set(ControlMode.PercentOutput, 1);
                 }
                 else {
                     ArmMotor.set(ControlMode.PercentOutput, 0);
+                    ArmMotor2.set(ControlMode.PercentOutput, 0);
                 }
                 break;
             case 2:
                 if (ArmCANCoder.getAbsolutePosition() > Constants.ArmMinAngle) {
-                    ArmMotor.set(ControlMode.PercentOutput, -0.25);
+                    ArmMotor.set(ControlMode.PercentOutput, -1);
+                    ArmMotor2.set(ControlMode.PercentOutput, -1);
                 }
                 else {
                     ArmMotor.set(ControlMode.PercentOutput, 0);
+                    ArmMotor2.set(ControlMode.PercentOutput, 0);
                 }
                 break;
             case 3:
                 ArmMotor.set(ControlMode.PercentOutput, 1);
+                ArmMotor2.set(ControlMode.PercentOutput, 1);
                 break;
             default:
                 ArmMotor.set(ControlMode.PercentOutput, 0);
+                ArmMotor2.set(ControlMode.PercentOutput, 0);
                 break;
         }
     }
