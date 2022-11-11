@@ -71,7 +71,7 @@ public class RobotContainer {
             m_swerveDriveSubsystem.setFieldOriented(!m_swerveDriveSubsystem.getFieldOriented(), 0);
         }));
         joysticks.ArmUp.whenActive(
-            new RunCommand(m_armSubsystem::forcearmUp, m_armSubsystem)
+            new RunCommand(m_armSubsystem::armUp, m_armSubsystem)
           ).whenInactive(
             new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
           );
@@ -81,7 +81,16 @@ public class RobotContainer {
           ).whenInactive(
             new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
           );
-      
+        joysticks.ArmOverride.whenActive(
+          new RunCommand(m_armSubsystem::forceDown, m_armSubsystem)
+        ).whenInactive(
+          new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
+        );
+        joysticks.ArmReset.whenActive(
+          new RunCommand(m_armSubsystem::EncoderReset, m_armSubsystem)
+        ).whenInactive(
+          new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
+        );
         joysticks.ElevatorUp.whenActive(
             new RunCommand(m_elevatorSubsystem::elevatorUp, m_elevatorSubsystem)
           ).whenInactive(

@@ -18,7 +18,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Elevator Encoder", ElevatorEncoder.getPosition());
-
+        SmartDashboard.putBoolean("Elevator Stop", ElevatorStop.get());
         if (elevatorState == 1) {    
             if (ElevatorEncoder.getPosition() >= Constants.ElevatorTop) {
                 ElevatorMotor.stopMotor();

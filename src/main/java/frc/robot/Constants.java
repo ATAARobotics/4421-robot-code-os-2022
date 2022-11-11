@@ -69,9 +69,11 @@ public class Constants {
             43423.315, 45649.9148, 45547.4436, 45648.5925
     };
 
-    public static final int ArmMotorID = 21;
+    public static final int PrimaryArmMotorID = 21;
+    // 9000 is not the ID
+    public static final int SecondaryArmMotorID = 24;
+
     public static final int ElevatorMotor = 22;
-    public static final int ClawMotorID = 21;
 
     public static final int ArmCANCoderID = 23;
     // Maximum arm rotation (in degrees)
