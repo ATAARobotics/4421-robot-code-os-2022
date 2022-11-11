@@ -73,6 +73,8 @@ public class Constants {
     // 9000 is not the ID
     public static final int SecondaryArmMotorID = 24;
 
+    public static final int ArmMotorID = 21;
+    public static final int ArmMotorID2 = 24;
     public static final int ElevatorMotor = 22;
 
     public static final int ArmCANCoderID = 23;

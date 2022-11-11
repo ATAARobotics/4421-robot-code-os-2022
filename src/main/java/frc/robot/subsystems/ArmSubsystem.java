@@ -4,41 +4,54 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.wpilibj.CAN;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
-    private VictorSPX PrimaryArmMotor = new VictorSPX(Constants.PrimaryArmMotorID);
-    private VictorSPX SecondaryArmMotor = new VictorSPX(Constants.SecondaryArmMotorID);
+    private VictorSPX ArmMotor = new VictorSPX(Constants.ArmMotorID);
+    private VictorSPX ArmMotor2 = new VictorSPX(Constants.ArmMotorID2);
     private CANCoder ArmCANCoder = new CANCoder(Constants.ArmCANCoderID);
     private int armState = 0;
+    private DigitalInput ArmLowerStop = new DigitalInput(2);
+    private DigitalInput ArmUpperStop = new DigitalInput(3);
     @Override
     public void periodic() {
         SmartDashboard.putNumber("cancoder position", ArmCANCoder.getAbsolutePosition());
+        SmartDashboard.putBoolean("Arm Lower Stop", ArmLowerStop.get());
+        SmartDashboard.putBoolean("Arm Upper Stop", ArmUpperStop.get());
         switch (armState){
             case 1:
-                armMotorSet(ControlMode.PercentOutput, 1);
-                /*if (ArmCANCoder.getAbsolutePosition() < Constants.ArmMaxAngle) {
-                    armMotorSet(ControlMode.PercentOutput, 1);
+                if (ArmCANCoder.getAbsolutePosition() < Constants.ArmMaxAngle && ArmUpperStop.get() == true) {
+                    ArmMotor.set(ControlMode.PercentOutput, 1);
+                    ArmMotor2.set(ControlMode.PercentOutput, 1);
                 }
                 else {
-                    armMotorSet(ControlMode.PercentOutput, 0);
-                }*/
+                    ArmMotor.set(ControlMode.PercentOutput, 0);
+                    ArmMotor2.set(ControlMode.PercentOutput, 0);
+                }
                 break;
             case 2:
-                if (ArmCANCoder.getAbsolutePosition() > Constants.ArmMinAngle) {
-                    armMotorSet(ControlMode.PercentOutput, -1);
+                if (ArmCANCoder.getAbsolutePosition() > Constants.ArmMinAngle && ArmLowerStop.get() == true) {
+                    ArmMotor.set(ControlMode.PercentOutput, -1);
+                    ArmMotor2.set(ControlMode.PercentOutput, -1);
                 }
                 else {
-                    armMotorSet(ControlMode.PercentOutput, 0);
+                    ArmMotor.set(ControlMode.PercentOutput, 0);
+                    ArmMotor2.set(ControlMode.PercentOutput, 0);
                 }
                 break;
             case 3:
-                armMotorSet(ControlMode.PercentOutput, -1);
+                ArmMotor.set(ControlMode.PercentOutput, -1);
+                ArmMotor2.set(ControlMode.PercentOutput, -1);
                 break;
             default:
-                armMotorSet(ControlMode.PercentOutput, 0);
+                ArmMotor.set(ControlMode.PercentOutput, 0);
+                ArmMotor2.set(ControlMode.PercentOutput, 0);
                 break;
         }
     }

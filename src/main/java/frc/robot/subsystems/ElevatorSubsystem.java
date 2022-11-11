@@ -12,41 +12,43 @@ import frc.robot.Constants;
 public class ElevatorSubsystem extends SubsystemBase {
     private CANSparkMax ElevatorMotor = new CANSparkMax(Constants.ElevatorMotor, MotorType.kBrushless);
     private RelativeEncoder ElevatorEncoder = ElevatorMotor.getEncoder();
-    private DigitalInput ElevatorStop = new DigitalInput(0);
+    private DigitalInput ElevatorLowerStop = new DigitalInput(0);
+    private DigitalInput ElevatorUpperStop = new DigitalInput(1);
     private int elevatorState = 0;
     private double elevatorSetPoint;
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Elevator Encoder", ElevatorEncoder.getPosition());
-        SmartDashboard.putBoolean("Elevator Stop", ElevatorStop.get());
+        SmartDashboard.putBoolean("Elevator Lower Stop", ElevatorLowerStop.get());
+        SmartDashboard.putBoolean("Elevator Upper Stop", ElevatorUpperStop.get());
         if (elevatorState == 1) {    
-            if (ElevatorEncoder.getPosition() >= Constants.ElevatorTop) {
+            if (ElevatorEncoder.getPosition() >= Constants.ElevatorTop || ElevatorUpperStop.get() == false) {
                 ElevatorMotor.stopMotor();
             }else {
-                ElevatorMotor.set(0.25);
+                ElevatorMotor.set(1.0);
             }
         } else if(elevatorState == 2) {
-            if (ElevatorEncoder.getPosition() <= 0 || ElevatorStop.get() == true) {
+            if (ElevatorEncoder.getPosition() <= 0 || ElevatorLowerStop.get() == false) {
                 ElevatorMotor.stopMotor();
             } else {
-                ElevatorMotor.set(-0.25);
+                ElevatorMotor.set(-1.0);
             }
         } else if(elevatorState == 3) {
-            if(ElevatorStop.get() == true){
+            if(ElevatorLowerStop.get() == false){
                 ElevatorMotor.set(0);
             }{
-                ElevatorMotor.set(-0.25);
+                ElevatorMotor.set(-1.0);
             }
         } else if (elevatorState == 4){
             if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) + 0.5){
                 if (ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) + 3){
-                    ElevatorMotor.set(-0.25);
+                    ElevatorMotor.set(-1.0);
                 }else{
                     ElevatorMotor.set(-1);
                 }
             }else if(ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) - 0.5){
                 if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) - 3){
-                    ElevatorMotor.set(0.25);
+                    ElevatorMotor.set(1.0);
                 }else{
                     ElevatorMotor.set(1);
                 }
