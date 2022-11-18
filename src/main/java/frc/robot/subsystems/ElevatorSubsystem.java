@@ -28,7 +28,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 ElevatorMotor.set(1.0);
             }
         } else if(elevatorState == 2) {
-            if (ElevatorEncoder.getPosition() <= 0 || ElevatorLowerStop.get() == false) {
+            if ((ElevatorEncoder.getPosition() <= 0 || ElevatorEncoder.getPosition() > Constants.ElevatorTop + 30) || ElevatorLowerStop.get() == false) {
                 ElevatorMotor.stopMotor();
             } else {
                 ElevatorMotor.set(-1.0);

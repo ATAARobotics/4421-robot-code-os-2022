@@ -57,8 +57,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void armMotorSet(ControlMode controlMode, double speed) {
-        PrimaryArmMotor.set(controlMode, speed);
-        SecondaryArmMotor.set(controlMode, speed);
+        ArmMotor.set(controlMode, speed);
+        ArmMotor2.set(controlMode, speed);
     }
     public void armUp() {
         armState = 1;
