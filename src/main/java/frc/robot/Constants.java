@@ -66,7 +66,8 @@ public class Constants {
 
     // Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = new double[] {
-            43423.315, 45649.9148, 45547.4436, 45648.5925
+        42719.3171, 43277.6126, 43235.0041, 43083.3683
+
     };
 
     public static final int PrimaryArmMotorID = 21;
