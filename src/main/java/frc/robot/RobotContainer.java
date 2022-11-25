@@ -120,6 +120,9 @@ public class RobotContainer {
         
         joysticks.toggleClaw
           .toggleWhenPressed(new StartEndCommand(m_clawSubsystem::clawReverse, m_clawSubsystem::clawForward, m_clawSubsystem));
+
+        joysticks.extendClaw
+          .toggleWhenPressed(new InstantCommand(m_clawSubsystem::clawExtend, m_clawSubsystem));
     }
 
     public OI getOI() {

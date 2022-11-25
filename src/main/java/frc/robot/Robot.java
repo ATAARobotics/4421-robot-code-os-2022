@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 
 public class Robot extends TimedRobot {
 
@@ -34,6 +35,10 @@ public class Robot extends TimedRobot {
             SmartDashboard.putNumber("Rotation Controller Temp",
                     robotContainer.getSwerveDriveSubsystem().getRotationTemperature());
             SmartDashboard.putNumber("Robot Heading", robotContainer.getSwerveDriveSubsystem().getHeading());
+            SmartDashboard.putNumber("Front left ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
+            SmartDashboard.putNumber("Front right ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
+            SmartDashboard.putNumber("Back left ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
+            SmartDashboard.putNumber("Back right ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
         }
     }
 

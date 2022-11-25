@@ -61,7 +61,7 @@ public class Constants {
     // Sensor Ports
 
     // Solenoid Ports
-    public static final int[] CLAW_PNEUMATIC = { 6 , 7 }; // Change Later when claw is built
+    public static final int[] CLAW_PNEUMATIC = { 4 , 5 , 6 , 7 }; // Change Later when claw is built
     // Sensor config
 
     // Drive encoder ticks per meter
@@ -80,7 +80,7 @@ public class Constants {
 
     public static final int ArmCANCoderID = 23;
     // Maximum arm rotation (in degrees)
-    public static final double ArmMaxAngle = 200;
+    public static final double ArmMaxAngle = 300;
     // Minimum arm rotation (in degrees)
     public static final double ArmMinAngle = 5;
 

@@ -23,7 +23,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     boolean fieldOriented = false;
 
     // An array of all the modules on the swerve drive
-    private SwerveModule[] swerveModules;
+    public SwerveModule[] swerveModules;
 
     // The odometry for the swerve drive
     private SwerveOdometry odometry;
@@ -122,7 +122,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         // a long rectangular robot turns differently than a square robot
         double wheelbase = Constants.WHEELBASE;
         double trackWidth = Constants.TRACK_WIDTH;
-
+        
         if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("X Velocity", xVelocity);
             SmartDashboard.putNumber("Y Velocity", yVelocity);
@@ -202,6 +202,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             driveMotorHighestTemp = driveTemp;
             rotationMotorHighestTemp = rotTemp;
         }
+        
     }
 
     /**

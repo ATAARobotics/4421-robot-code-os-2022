@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -17,6 +18,7 @@ class OI {
     private BetterJoystick gunnerStick = new BetterJoystick(1, 0);
 
     public JoystickButton toggleClaw;
+    public JoystickButton extendClaw;
 
     public JoystickButton ArmUp;
     public JoystickButton ArmDown;
@@ -64,6 +66,7 @@ class OI {
         ElevatorReset = driveStick.getWPIJoystickButton("ElevatorReset");
         ElevatorHalfwayPoint = driveStick.getWPIJoystickButton("ElevatorHalfwayPoint");
         toggleClaw = gunnerStick.getWPIJoystickButton("ToggleClaw");
+        extendClaw = gunnerStick.getWPIJoystickButton("ExtendClaw");
         
     }
 
@@ -72,6 +75,7 @@ class OI {
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
         speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
+        // gunnerStick.setRumble(RumbleType.kLeftRumble, 1);   ONLY IF ABDULLAH IS GUNNER!!!
 
         // Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < Constants.JOY_DEAD_ZONE) {
