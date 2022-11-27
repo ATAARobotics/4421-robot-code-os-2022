@@ -34,9 +34,12 @@ public class ClawSubsystem extends SubsystemBase {
     public void clawExtend() {
         if (clawExtended) {
             armExtender.set(Value.kReverse);
+            clawExtended = false;
         }
         else {
+            System.out.print("clawforward");
             armExtender.set(Value.kForward);
+            clawExtended = true;
         }
     }
 }    

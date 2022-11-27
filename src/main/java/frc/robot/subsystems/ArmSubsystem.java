@@ -28,6 +28,7 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Arm Upper Stop", ArmUpperStop.get());
         switch (armState){
             case 1:
+                System.out.println("armup");
                 if (ArmCANCoder.getPosition() < Constants.ArmMaxAngle && ArmUpperStop.get() == true) {
                     ArmMotor.set(ControlMode.PercentOutput, 1);
                     ArmMotor2.set(ControlMode.PercentOutput, 1);
@@ -64,6 +65,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
     public void armUp() {
         armState = 1;
+        System.out.println("armup");
     }
     public void armDown() {
         armState = 2;

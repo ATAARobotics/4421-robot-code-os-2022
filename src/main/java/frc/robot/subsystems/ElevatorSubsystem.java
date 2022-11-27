@@ -40,14 +40,14 @@ public class ElevatorSubsystem extends SubsystemBase {
                 ElevatorMotor.set(-1.0);
             }
         } else if (elevatorState == 4){
-            if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) + 0.5){
-                if (ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) + 3){
+            if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) + 3){
+                if (ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) + 10){
                     ElevatorMotor.set(-1.0);
                 }else{
                     ElevatorMotor.set(-1);
                 }
-            }else if(ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) - 0.5){
-                if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) - 3){
+            }else if(ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) - 3){
+                if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) - 10){
                     ElevatorMotor.set(1.0);
                 }else{
                     ElevatorMotor.set(1);
