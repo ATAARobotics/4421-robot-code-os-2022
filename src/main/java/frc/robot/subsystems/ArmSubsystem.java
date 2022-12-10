@@ -3,13 +3,16 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
+import edu.wpi.first.wpilibj.Joystick;
 
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.BetterJoystick;
 import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -18,8 +21,8 @@ public class ArmSubsystem extends SubsystemBase {
     private CANCoder ArmCANCoder = new CANCoder(Constants.ArmCANCoderID);
     private int armState = 0;
     private DigitalInput ArmLowerStop = new DigitalInput(2);
-
-
+    private BetterJoystick gunnerStick = new BetterJoystick(1, 0);
+    
     private DigitalInput ArmUpperStop = new DigitalInput(3);
     @Override
     public void periodic() {
@@ -32,29 +35,35 @@ public class ArmSubsystem extends SubsystemBase {
                 if (ArmCANCoder.getPosition() < Constants.ArmMaxAngle && ArmUpperStop.get() == true) {
                     ArmMotor.set(ControlMode.PercentOutput, 1);
                     ArmMotor2.set(ControlMode.PercentOutput, 1);
+                    gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
                 }
                 else {
                     ArmMotor.set(ControlMode.PercentOutput, 0);
                     ArmMotor2.set(ControlMode.PercentOutput, 0);
+                    gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
                 }
                 break;
             case 2:
                 if (ArmCANCoder.getPosition() > Constants.ArmMinAngle && ArmLowerStop.get() == true) {
                     ArmMotor.set(ControlMode.PercentOutput, -1);
                     ArmMotor2.set(ControlMode.PercentOutput, -1);
+                    gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
                 }
                 else {
                     ArmMotor.set(ControlMode.PercentOutput, 0);
                     ArmMotor2.set(ControlMode.PercentOutput, 0);
+                    gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
                 }
                 break;
             case 3:
                 ArmMotor.set(ControlMode.PercentOutput, -1);
                 ArmMotor2.set(ControlMode.PercentOutput, -1);
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
                 break;
             default:
                 ArmMotor.set(ControlMode.PercentOutput, 0);
                 ArmMotor2.set(ControlMode.PercentOutput, 0);
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
                 break;
         }
     }

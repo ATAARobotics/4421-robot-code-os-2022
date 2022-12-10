@@ -75,7 +75,7 @@ class OI {
         yVelocity = driveStick.getAnalog("YVelocity");
         rotationVelocity = driveStick.getAnalog("RotationVelocity");
         speed = (-driveStick.getAnalog("Speed") + 1) / 4 + 0.5;
-        // gunnerStick.setRumble(RumbleType.kLeftRumble, 1);   ONLY IF ABDULLAH IS GUNNER!!!
+        
 
         // Dead zones
         if (Math.sqrt(Math.pow(xVelocity, 2) + Math.pow(yVelocity, 2)) < Constants.JOY_DEAD_ZONE) {
