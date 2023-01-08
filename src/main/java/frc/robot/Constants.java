@@ -1,106 +1,139 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Preferences;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-/**
- * A centralized file that keeps track of constants of the robot, such as device
- * IDs, device ports and robot dimensions
- * 
- * This is not the same as the RobotMaps from previous years, the only thing in
- * this class is constants, each hardware class defines its own motors and
- * whatnot
- */
-public class Constants {
-    // Disables some safeties and enables logging of warnings we expect and know
-    // about during development
-    public static final boolean COMP_MODE = false;
-    public static final boolean USING_PIGEON = true;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
-    // Enforces a maximum safe speed of the motors. This may cause steering issues.
-    public static final double MAX_SAFE_SPEED_OVERRIDE = COMP_MODE ? 1.0 : 0.8;
+import frc.lib.util.SwerveModuleConstants;
 
-    // Measurements are in meters
-    public static final double WHEELBASE = 0.67945;
-    public static final double TRACK_WIDTH = 0.4953;
+public final class Constants {
+    public static final double stickDeadband = 0.1;
 
-    // Maximum linear speed is in meters/second
-    public static final double MAXIMUM_SPEED = 1.25;
-    // USED ONLY IN AUTO - Maximum acceleration is in meters/second/second
-    public static final double MAXIMUM_ACCELERATION = 2.0;
+    public static final class Swerve {
+        public static final int pigeonID = 20;
+        public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
 
-    // Maximum rotational speed is in radians/second
-    public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI;
-    // USED ONLY IN AUTO - Maximum rotational acceleration is in
-    // radians/second/second
-    public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
+        /* Drivetrain Constants */
+        public static final double trackWidth = 0.4953;
+        public static final double wheelBase = 0.67945;
+        public static final double wheelDiameter = Units.inchesToMeters(3.76);
+        public static final double wheelCircumference = wheelDiameter * Math.PI;
 
-    // Swerve offset
-    public static final double[] ANGLE_OFFSET = new double[] {
-            0.3528, -3.0526, -2.4252, -2.5863
-    };
+        public static final double openLoopRamp = 0.25;
+        public static final double closedLoopRamp = 0.0;
 
-    /*
-     * CAN ID and CAN Bus
-     * CAN Bus options supported: "rio", "rio"
-     * ***IF CANIVORE FAILS CHANGE SWERVE_BUS_ACTIVE TO false***
-     */
+        public static final double driveGearRatio = (6.86 / 1.0); //6.86:1
+        public static final double angleGearRatio = (12.8 / 1.0); //12.8:1
 
-    // CAN FD Device IDs
-    public static final int[] DRIVE_MOTORS_ID = { 1, 2, 3, 4 };
-    public static final int[] ROTATION_MOTORS_ID = { 5, 6, 7, 8 };
-    public static final int[] ROTATION_ENCODERS_ID = { 9, 10, 11, 12 };
-    public static final int PIGEON_ID = 20;
+        public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+                new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
+                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
 
-    /*
-     * CAN Bus (Legacy) NOT CURRENTLY SUPPORTED
-     * public static final String SPARK_MOTOR_BUS = "rio";
-     */
+        /* Swerve Current Limiting */
+        public static final int angleContinuousCurrentLimit = 25;
+        public static final int anglePeakCurrentLimit = 40;
+        public static final double anglePeakCurrentDuration = 0.1;
+        public static final boolean angleEnableCurrentLimit = true;
 
-    // PWM Ports
+        public static final int driveContinuousCurrentLimit = 35;
+        public static final int drivePeakCurrentLimit = 60;
+        public static final double drivePeakCurrentDuration = 0.1;
+        public static final boolean driveEnableCurrentLimit = true;
 
-    // Sensor Ports
+        /* Angle Motor PID Values */
+        public static final double angleKP = 0.4;
+        public static final double angleKI = 0.0;
+        public static final double angleKD = 0.001;
+        public static final double angleKF = 0.0;
 
-    // Solenoid Ports
-    public static final int[] CLAW_PNEUMATIC = { 4 , 5 , 6 , 7 }; // Change Later when claw is built
-    // Sensor config
+        /* Drive Motor PID Values */
+        public static final double driveKP = 0.45;
+        public static final double driveKI = 0.0;
+        public static final double driveKD = 0.001;
+        public static final double driveKF = 0.0;
 
-    // Drive encoder ticks per meter
-    public static final double[] TICKS_PER_METER = new double[] {
-        42719.3171, 43277.6126, 43235.0041, 43083.3683
+        /* Drive Motor Characterization Values */
+        public static final double driveKS = (0.667 / 12); //divide by 12 to convert from volts to percent output for CTRE
+        public static final double driveKV = (2.44 / 12);
+        public static final double driveKA = (0.27 / 12);
 
-    };
+        /* Swerve Profiling Values */
+        public static final double maxSpeed = 1.25; //meters per second
+        public static final double maxAngularVelocity = Math.PI;
 
-    public static final int PrimaryArmMotorID = 21;
-    // 9000 is not the ID
-    public static final int SecondaryArmMotorID = 24;
+        /* Neutral Modes */
+        public static final NeutralMode angleNeutralMode = NeutralMode.Brake;
+        public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
-    public static final int ArmMotorID = 21;
-    public static final int ArmMotorID2 = 24;
-    public static final int ElevatorMotor = 22;
+        /* Motor Inverts */
+        public static final boolean driveMotorInvert = true;
+        public static final boolean angleMotorInvert = true;
 
-    public static final int ArmCANCoderID = 23;
-    // Maximum arm rotation (in degrees)
-    public static final double ArmMaxAngle = 300;
-    // Minimum arm rotation (in degrees)
-    public static final double ArmMinAngle = 5;
+        /* Angle Encoder Invert */
+        public static final boolean canCoderInvert = true;
 
-    public static final double ElevatorTop = 233;
+        /* Module Specific Constants */
+        /* Front Left Module - Module 0 */
+        public static final class Mod0 {
+            public static final int driveMotorID = 1;
+            public static final int angleMotorID = 5;
+            public static final int canCoderID = 9;
+            public static final double angleOffset = 0.3528;
+            public static final SwerveModuleConstants constants = 
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+        }
 
-    // DRIVER CONFIG
-    // Dead zones of each joystick - Measured from 0 to 1. This should always be at
-    // least 0.1.
-    public static final double JOY_DEAD_ZONE = 0.3;
-    // Whether teleop should start in field oriented mode
-    public static final boolean FIELD_ORIENTED = true;
-    // The sensitivity value for the joysticks - the values are exponentiated to
-    // this value, so higher numbers result in a lower sensitivity, 1 results in
-    // normal sensitivity, and decimals increase sensitivity
-    public static final double JOYSTICK_SENSITIVITY = 2;
-    public static final double TURNING_SENSITIVITY = 5;
-    // LOGGING
-    // Set this to true if you want to log diagnostics to SmartDashboard
-    public static final boolean REPORTING_DIAGNOSTICS = true;
-    // Set this to true if you want to visualize the robot's movement during auto -
-    // talk to Jacob if you have no idea what this does
-    public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
+        /* Front Right Module - Module 1 */
+        public static final class Mod1 {
+            public static final int driveMotorID = 2;
+            public static final int angleMotorID = 6;
+            public static final int canCoderID = 10;
+            public static final double angleOffset = -3.0526;
+            public static final SwerveModuleConstants constants = 
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+        }
+        
+        /* Back Left Module - Module 2 */
+        public static final class Mod2 {
+            public static final int driveMotorID = 3;
+            public static final int angleMotorID = 7;
+            public static final int canCoderID = 11;
+            public static final double angleOffset = -2.4252;
+            public static final SwerveModuleConstants constants = 
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+        }
+
+        /* Back Right Module - Module 3 */
+        public static final class Mod3 {
+            public static final int driveMotorID = 4;
+            public static final int angleMotorID = 8;
+            public static final int canCoderID = 12;
+            public static final double angleOffset = -2.5863;
+            public static final SwerveModuleConstants constants = 
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+        }
+
+    }
+
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond = 3;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    
+        public static final double kPXController = 1;
+        public static final double kPYController = 1;
+        public static final double kPThetaController = 1;
+    
+        // Constraint for the motion profilied robot angle controller
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
+            new TrapezoidProfile.Constraints(
+                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+      }
+
 }

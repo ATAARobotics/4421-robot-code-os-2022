@@ -1,290 +1,98 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+
+import frc.lib.math.Conversions;
+import frc.lib.util.CTREModuleState;
+import frc.lib.util.SwerveModuleConstants;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.CANCoder;
 
 public class SwerveModule {
+    public int moduleNumber;
+    private double angleOffset;
+    private TalonFX mAngleMotor;
+    private TalonFX mDriveMotor;
+    private CANCoder angleEncoder;
+    private double lastAngle;
 
-    // Restrictions on the minimum and maximum speed of the rotation motors (0 to 1)
-    private double maxRotationSpeed = 1.0;
-    private double minRotationSpeed = 0.0;
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
-    private TalonFX driveMotor;
-    private TalonFX rotationMotor;
-    private CANCoder rotationEncoder;
+    public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants){
+        this.moduleNumber = moduleNumber;
+        angleOffset = moduleConstants.angleOffset;
+        
+        /* Angle Encoder Config */
+        angleEncoder = new CANCoder(moduleConstants.cancoderID);
+        configAngleEncoder();
 
-    private double ticksPerMeter;
+        /* Angle Motor Config */
+        mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
+        configAngleMotor();
 
-    // The rotation encoders all have their zero position in a different place, so
-    // keep track of how far off zero is from straight ahead
-    private double rotationOffset;
+        /* Drive Motor Config */
+        mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
+        configDriveMotor();
 
-    // The right-hand modules have their wheels facing the other way, so we need to
-    // invert their direction
-    private double inversionConstant = 1.0;
+        lastAngle = getState().angle.getDegrees();
+    }
 
-    // The ID number of the module
-    private int id;
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
+        desiredState = CTREModuleState.optimize(desiredState, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
 
-    // The name of the module - not used for much other than debugging
-    private String name;
-
-    // The velocity (-1 to 1) to run the motor
-    private double driveVelocity = 0.0;
-    private double reverseMultiplier = 1.0;
-
-    // Create a PID for controlling the angle of the module
-    private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
-
-    // Create a PID for controlling the velocity of the module
-    private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);
-
-    // Safety override
-    private boolean cancelAllMotion = false;
-
-    /**
-     * Creates a swerve module with the given hardware
-     * 
-     * @param driveMotor         The Talon SRX running the wheel
-     * @param rotationMotor      The Victor SPX that rotates the wheel
-     * @param rotationEncoder    The input from the encoder
-     * @param rotationOffset     The distance from zero that forward is on the
-     *                           encoder
-     * @param invertDrive        Whether to invert the direction of the wheel
-     * @param driveTicksPerMeter The number of encoder ticks per meter on the drive
-     *                           motor
-     * @param id                 The ID of the module
-     * @param name               The name of the module
-     */
-    public SwerveModule(TalonFX driveMotor, TalonFX rotationMotor, CANCoder rotationEncoder, double rotationOffset,
-            boolean invertDrive, double driveTicksPerMeter, int id, String name) {
-        this.driveMotor = driveMotor;
-        this.rotationMotor = rotationMotor;
-        this.rotationEncoder = rotationEncoder;
-        this.rotationOffset = rotationOffset;
-
-        // Current limit the motors to avoid brownouts
-        this.driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 26, 26, 1));
-        this.rotationMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 26, 26, 1));
-
-        this.ticksPerMeter = driveTicksPerMeter;
-
-        this.id = id;
-        this.name = name;
-
-        if (invertDrive) {
-            this.inversionConstant = -1.0;
+        if(isOpenLoop){
+            double percentOutput = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+            mDriveMotor.set(ControlMode.PercentOutput, percentOutput);
+        }
+        else {
+            double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
+            mDriveMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(desiredState.speedMetersPerSecond));
         }
 
-        // Set up the encoder from the drive motor
-        this.driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        this.driveMotor.setSelectedSensorPosition(0);
-
-        // Set up the encoder from the rotation motor
-        this.rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
-
-        // Because the rotation is on a circle, not a line, we want to take the shortest
-        // route to the setpoint - this function tells the PID it is on a circle from 0
-        // to 2*Pi
-        angleController.enableContinuousInput(-Math.PI, Math.PI);
-
-        this.rotationMotor.setInverted(true);
+        double angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxSpeed * 0.01)) ? lastAngle : desiredState.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
+        mAngleMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle, Constants.Swerve.angleGearRatio)); 
+        lastAngle = angle;
     }
 
-    /**
-     * This function should run every teleopPeriodic
-     */
-    public boolean periodic() {
-        // Set the drive velocity
-        double calculated = 0.0;
-        double velocity = 0.0;
-        double rotationVelocity = 0.0;
-        if (driveVelocity != 0.0 && !cancelAllMotion) {
-            // Get the rotation velocity
-            SmartDashboard.putNumber(name + " Angle", getAngle());
-            rotationVelocity = angleController.calculate(getAngle());
-            // Clamp the value (not scale because faster is okay, it's on a PID)
-            rotationVelocity = MathUtil.clamp(rotationVelocity, -maxRotationSpeed, maxRotationSpeed);
-            if (rotationVelocity > -minRotationSpeed && rotationVelocity < minRotationSpeed) {
-                rotationVelocity = 0.0;
-            }
-            // Set the rotation motor velocity based on the next value from the angle PID,
-            // clamped to not exceed the maximum speed
-            SmartDashboard.putNumber(name + " Rot Vel", rotationVelocity);
-            rotationMotor.set(ControlMode.PercentOutput, rotationVelocity);
-
-            calculated = velocityController.calculate(getVelocity());
-
-            velocity = MathUtil.clamp(calculated, -Constants.MAX_SAFE_SPEED_OVERRIDE,
-                    Constants.MAX_SAFE_SPEED_OVERRIDE);
-
-            // DO NOT MESS WITH THIS CODE please
-            // thanks
-            if (Math.abs(velocity) > Constants.MAX_SAFE_SPEED_OVERRIDE) {
-                // For some reason, the robot is above the max safe speed - disable the bot
-                return true;
-            } else {
-                driveMotor.set(ControlMode.PercentOutput, velocity * inversionConstant);
-            }
-        } else {
-            driveMotor.set(ControlMode.PercentOutput, 0.0);
-            velocityController.reset();
-            rotationMotor.set(ControlMode.PercentOutput, 0.0);
-            angleController.reset();
-        }
-
-        if (Constants.REPORTING_DIAGNOSTICS) {
-            SmartDashboard.putNumber(name + " Speed Setpoint", driveVelocity);
-            SmartDashboard.putNumber(name + " PID Output", rotationVelocity);
-            SmartDashboard.putNumber(name + " PID Error", angleController.getPositionError());
-            SmartDashboard.putNumber(name + " Raw Speed", velocity);
-            SmartDashboard.putNumber(name + " Speed (m/s)", getVelocity());
-            SmartDashboard.putNumber(name + " Angle", getAngle());
-            SmartDashboard.putNumber(name + " Angle Target", getTargetAngle());
-            SmartDashboard.putNumber(name + " Distance", getDistance(false));
-            SmartDashboard.putNumber(name + " Raw Encoder Ticks", driveMotor.getSelectedSensorPosition());
-            SmartDashboard.putNumber(name + " Raw rotation", rotationEncoder.getAbsolutePosition());
-        }
-
-        return false;
+    private void resetToAbsolute(){
+        double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset, Constants.Swerve.angleGearRatio);
+        mAngleMotor.setSelectedSensorPosition(absolutePosition);
     }
 
-    /**
-     * Sets the velocity to drive the module in meters/second.
-     * This can exceed the maximum velocity specified in RobotMap.
-     * 
-     * @param velocity The velocity to drive the module.
-     */
-    public void setDriveVelocity(double velocity) {
-        driveVelocity = velocity * reverseMultiplier;
-        velocityController.setSetpoint(driveVelocity);
+    private void configAngleEncoder(){        
+        angleEncoder.configFactoryDefault();
+        angleEncoder.configAllSettings(Robot.ctreConfigs.swerveCanCoderConfig);
     }
 
-    /**
-     * Sets the target in radians for the angle PID
-     * 
-     * @param angle The angle to try to reach. This value should be between -Pi and
-     *              Pi
-     */
-    public void setTargetAngle(double angle) {
-        double currentAngle = getAngle();
-
-        // If the smallest angle between the current angle and the target is greater
-        // than Pi/2, invert the velocity and turn the wheel to a closer angle
-        // Math.atan2(y, x) computes the angle to a given point from the x-axis
-        if (Math.abs(Math.atan2(Math.sin(angle - currentAngle), Math.cos(angle - currentAngle))) > Math.PI / 2.0) {
-            angle += Math.PI;
-            angle %= 2.0 * Math.PI;
-            // Ensure the value is not negative
-            if (angle < 0) {
-                angle += 2.0 * Math.PI;
-            }
-            reverseMultiplier = -1.0;
-        } else {
-            reverseMultiplier = 1.0;
-        }
-        angleController.setSetpoint(angle);
+    private void configAngleMotor(){
+        mAngleMotor.configFactoryDefault();
+        mAngleMotor.configAllSettings(Robot.ctreConfigs.swerveAngleFXConfig);
+        mAngleMotor.setInverted(Constants.Swerve.angleMotorInvert);
+        mAngleMotor.setNeutralMode(Constants.Swerve.angleNeutralMode);
+        resetToAbsolute();
     }
 
-    /**
-     * Get the distance that the drive wheel has turned
-     * 
-     * @param rawTicks Whether the output should be in raw encoder ticks instead of
-     *                 meters
-     */
-    public double getDistance(boolean rawTicks) {
-        // Raw encoder ticks
-        double distance = driveMotor.getSelectedSensorPosition();
-
-        if (!rawTicks) {
-            // Meters
-            distance /= ticksPerMeter;
-        }
-
-        return distance;
+    private void configDriveMotor(){        
+        mDriveMotor.configFactoryDefault();
+        mDriveMotor.configAllSettings(Robot.ctreConfigs.swerveDriveFXConfig);
+        mDriveMotor.setInverted(Constants.Swerve.driveMotorInvert);
+        mDriveMotor.setNeutralMode(Constants.Swerve.driveNeutralMode);
+        mDriveMotor.setSelectedSensorPosition(0);
     }
 
-    /**
-     * Gets the current velocity in meters/second that the drive wheel is moving
-     */
-    public double getVelocity() {
-        // Raw encoder ticks per 100 ms???? maybe 1s?
-        double velocity = driveMotor.getSelectedSensorVelocity();
-
-        // Raw encoder ticks per 1 s
-        // velocity *= 10;
-
-        // Meters per second
-        velocity /= ticksPerMeter;
-
-        return -velocity * inversionConstant;
+    public Rotation2d getCanCoder(){
+        return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition());
     }
 
-    /**
-     * Gets the angle in radians of the module from -Pi to Pi
-     */
-    public double getAngle() {
-        double angle = (rotationEncoder.getAbsolutePosition() / 360 * 2.0 * Math.PI) + rotationOffset;
-        angle %= 2.0 * Math.PI;
-        if (angle < 0.0) {
-            angle += 2.0 * Math.PI;
-        }
-        angle -= Math.PI;
-
-        return angle;
+    public SwerveModuleState getState(){
+        double velocity = Conversions.falconToMPS(mDriveMotor.getSelectedSensorVelocity(), Constants.Swerve.wheelCircumference, Constants.Swerve.driveGearRatio);
+        Rotation2d angle = Rotation2d.fromDegrees(Conversions.falconToDegrees(mAngleMotor.getSelectedSensorPosition(), Constants.Swerve.angleGearRatio));
+        return new SwerveModuleState(velocity, angle);
     }
-
-    /**
-     * Gets the target angle in radians from the angle PID
-     */
-    public double getTargetAngle() {
-        return angleController.getSetpoint();
-    }
-
-    /**
-     * Stops all motion on this module - safety override
-     */
-    public void stop() {
-        cancelAllMotion = true;
-    }
-
-    public void setBrakes(boolean brakesOn) {
-        if (brakesOn) {
-            driveMotor.setNeutralMode(NeutralMode.Brake);
-            rotationMotor.setNeutralMode(NeutralMode.Brake);
-        } else {
-            driveMotor.setNeutralMode(NeutralMode.Coast);
-            rotationMotor.setNeutralMode(NeutralMode.Coast);
-        }
-    }
-
-    /**
-     * Get the id of the module
-     */
-    public int getId() {
-        return this.id;
-    }
-
-    /**
-     * Get the name of the module
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    public double getDriveTemperature() {
-        return driveMotor.getTemperature();
-    }
-
-    public double getRotationTemperature() {
-        return rotationMotor.getTemperature();
-    }
+    
 }

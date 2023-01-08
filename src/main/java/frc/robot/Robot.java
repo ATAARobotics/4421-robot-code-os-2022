@@ -1,115 +1,98 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.SwerveDriveSubsystem;
 
+/**
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
+ * project.
+ */
 public class Robot extends TimedRobot {
+  public static CTREConfigs ctreConfigs;
 
-    // Timer for keeping track of when to disable brakes after being disabled so
-    // that the robot stops safely - DO NOT USE COMMANDS-DOES NOT WORK WHEN DISABLED
-    private Timer brakesOffTimer = new Timer();
+  private Command m_autonomousCommand;
 
-    private RobotContainer robotContainer = null;
+  private RobotContainer m_robotContainer;
 
-    private Command m_autonomousCommand = null;;
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
+  @Override
+  public void robotInit() {
+    ctreConfigs = new CTREConfigs();
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // autonomous chooser on the dashboard.
+    m_robotContainer = new RobotContainer();
+  }
 
-    public Robot() {
-        robotContainer = new RobotContainer();
-        if (!Constants.COMP_MODE) {
-            DriverStation.silenceJoystickConnectionWarning(true);
-        } else {
-            DriverStation.silenceJoystickConnectionWarning(false);
-        }
+  /**
+   * This function is called every robot packet, no matter the mode. Use this for items like
+   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+   *
+   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+   * SmartDashboard integrated updating.
+   */
+  @Override
+  public void robotPeriodic() {
+    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    // commands, running already-scheduled commands, removing finished or interrupted commands,
+    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // block in order for anything in the Command-based framework to work.
+    CommandScheduler.getInstance().run();
+  }
+
+  /** This function is called once each time the robot enters Disabled mode. */
+  @Override
+  public void disabledInit() {}
+
+  @Override
+  public void disabledPeriodic() {}
+
+  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  @Override
+  public void autonomousInit() {
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
     }
+  }
 
-    @Override
-    public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
-        if (Constants.REPORTING_DIAGNOSTICS) {
-            SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
-            SmartDashboard.putNumber("Drive Controller Temp",
-                    robotContainer.getSwerveDriveSubsystem().getDriveTemperature());
-            SmartDashboard.putNumber("Rotation Controller Temp",
-                    robotContainer.getSwerveDriveSubsystem().getRotationTemperature());
-            SmartDashboard.putNumber("Robot Heading", robotContainer.getSwerveDriveSubsystem().getHeading());
-            SmartDashboard.putNumber("Front left ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
-            SmartDashboard.putNumber("Front right ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
-            SmartDashboard.putNumber("Back left ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
-            SmartDashboard.putNumber("Back right ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
-        }
+  /** This function is called periodically during autonomous. */
+  @Override
+  public void autonomousPeriodic() {}
+
+  @Override
+  public void teleopInit() {
+    // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
     }
+  }
 
-    @Override
-    public void disabledInit() {
-        // Cancel all commands
-        CommandScheduler.getInstance().cancelAll();
-        // Write remaining blackbox data to file
-        Blackbox.getInstance().finishLog();
-        // Start brake timer
-        brakesOffTimer.reset();
-        brakesOffTimer.start();
-    }
+  /** This function is called periodically during operator control. */
+  @Override
+  public void teleopPeriodic() {}
 
-    @Override
-    public void disabledPeriodic() {
-        if (brakesOffTimer.get() > 2.5) {
-            brakesOffTimer.stop();
-            brakesOffTimer.reset();
-            robotContainer.getSwerveDriveSubsystem().setBrakes(false);
-        }
-    }
+  @Override
+  public void testInit() {
+    // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().cancelAll();
+  }
 
-    @Override
-    public void autonomousInit() {
-        Blackbox.getInstance().startLog();
-        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
-        robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 0);
-        m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
-        m_autonomousCommand.schedule();
-    }
-
-    @Override
-    public void autonomousPeriodic() {
-        Blackbox.getInstance().periodic();
-    }
-
-    @Override
-    public void teleopInit() {
-        Blackbox.getInstance().startLog();
-
-        Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);
-        Blackbox.getInstance().addLog("Field Oriented", robotContainer.getSwerveDriveSubsystem()::getFieldOriented);
-
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
-            m_autonomousCommand = null;
-        }
-        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
-
-        if (!Constants.FIELD_ORIENTED) {
-            robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
-        }
-    }
-
-    @Override
-    public void teleopPeriodic() {
-        Blackbox.getInstance().periodic();
-        robotContainer.getOI().checkInputs();
-
-        if (Constants.REPORTING_DIAGNOSTICS) {
-            SmartDashboard.putNumber("Joy X", robotContainer.getOI().getXVelocity());
-            SmartDashboard.putNumber("Joy Y", robotContainer.getOI().getYVelocity());
-            SmartDashboard.putNumber("Rotation", robotContainer.getOI().getRotationVelocity());
-            SmartDashboard.putNumber("Slider", robotContainer.getOI().getSpeed());
-        }
-    }
-
-    @Override
-    public void testInit() {
-        Blackbox.getInstance().startLog();
-        CommandScheduler.getInstance().cancelAll();
-    }
+  /** This function is called periodically during test mode. */
+  @Override
+  public void testPeriodic() {}
 }
