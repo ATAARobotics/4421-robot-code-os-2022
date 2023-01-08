@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 //swerve commands and subsystems
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.auto.PracticeAuto;
+import frc.robot.commands.auto.*;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -40,6 +40,7 @@ public class RobotContainer {
     private final ArmSubsystem m_armSubsystem;
     private final ElevatorSubsystem m_elevatorSubsystem;
     private final ClawSubsystem m_clawSubsystem;
+    private final AutoPaths m_autoPaths;
 
     // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -54,13 +55,14 @@ public class RobotContainer {
         m_armSubsystem = new ArmSubsystem();
         m_elevatorSubsystem = new ElevatorSubsystem();
         m_clawSubsystem = new ClawSubsystem();
+        m_autoPaths = new AutoPaths();
 
         m_swerveDriveSubsystem.setBrakes(false);
 
         m_swerveDriveSubsystem.setDefaultCommand(
                 new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
                         joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
-        autoChooser.addOption("test", new PracticeAuto(m_swerveDriveSubsystem));
+        autoChooser.addOption("test", new Straight(m_swerveDriveSubsystem, m_autoPaths));
         autoChooser.addOption("DO NOTHING", new WaitCommand(0));
         SmartDashboard.putData(autoChooser);
         LiveWindow.disableAllTelemetry();
