@@ -10,26 +10,27 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Pigeon;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import frc.robot.SwerveOdometry;
-import frc.robot.Gyro;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
-
-    private Gyro gyro;
+    private Pigeon pigeon;
 
     // Whether the swerve should be field-oriented
-    boolean fieldOriented = false;
+     boolean fieldOriented = false;
 
     // An array of all the modules on the swerve drive
-    public SwerveModule[] swerveModules;
+    private SwerveModule[] swerveModules;
 
     // The odometry for the swerve drive
     private SwerveOdometry odometry;
+    private boolean useOdometry = false;
 
     // The current pose of the robot
     private Pose2d pose;
+    private double autoOffset = 0;
 
     // The position that the robot started at
     private Pose2d initialPose;
@@ -53,8 +54,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * @param gyro        The gyro object running on the robot
      * @param initialPose The initial pose that the robot is in
      */
-    public SwerveDriveSubsystem(Gyro gyro, Translation2d initialPosition, String bus) {
-        this.gyro = gyro;
+    public SwerveDriveSubsystem(Pigeon pigeon, Translation2d initialPosition, String bus) {
+        this.pigeon = pigeon;
         this.initialPose = new Pose2d(initialPosition, new Rotation2d(0.0));
         TalonFX[] driveMotors = { new TalonFX(Constants.DRIVE_MOTORS_ID[0], bus),
                 new TalonFX(Constants.DRIVE_MOTORS_ID[1], bus), new TalonFX(Constants.DRIVE_MOTORS_ID[2], bus),
@@ -74,7 +75,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[2], bus), Constants.ANGLE_OFFSET[2], true,
                 Constants.TICKS_PER_METER[2], 2, "Rear Left");
         SwerveModule rearRightModule = new SwerveModule(driveMotors[3], rotationMotors[3],
-                new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], true,
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], false,
                 Constants.TICKS_PER_METER[3], 3, "Rear Right");
 
         // Put the swerve modules in an array so we can process them easier
@@ -95,20 +96,21 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     /**
      * This function should be run during every teleop and auto periodic
      */
-    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity) {
+    public void setSwerveDrive(double xVelocity, double yVelocity, double rotationVelocity, boolean useOdometry) {
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
         this.rotationVelocity = rotationVelocity;
-
+        this.useOdometry = useOdometry;
     }
 
     @Override
     public void periodic() {
-
-        if (Constants.USING_PIGEON) {
-            gyro.update();
-        }
+        SmartDashboard.putBoolean("Field Oriented", fieldOriented);
         double gyroAngle = getHeading();
+        SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
+        SmartDashboard.putNumber("Gyro Value RAW", pigeon.getYawRaw());
+
+        SmartDashboard.putBoolean("IS FIELD ORIENTED", this.fieldOriented);
 
         if (fieldOriented) {
             double originalX = this.xVelocity;
@@ -122,7 +124,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         // a long rectangular robot turns differently than a square robot
         double wheelbase = Constants.WHEELBASE;
         double trackWidth = Constants.TRACK_WIDTH;
-        
+
         if (Constants.REPORTING_DIAGNOSTICS) {
             SmartDashboard.putNumber("X Velocity", xVelocity);
             SmartDashboard.putNumber("Y Velocity", yVelocity);
@@ -152,9 +154,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         };
 
         if (!safetyDisable) {
-            if (Constants.REPORTING_DIAGNOSTICS) {
-                SmartDashboard.putNumber("Gyro Value", gyro.getAngle());
-            }
+            // if (Constants.REPORTING_DIAGNOSTICS) {
+            //     SmartDashboard.putNumber("Gyro Value", pigeon.getYaw());
+            // }
 
             // Execute functions on each swerve module
             for (SwerveModule module : swerveModules) {
@@ -175,9 +177,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             }
 
             // Update the current pose with the latest velocities, angle, and a timestamp
-            boolean useOdometry = false;
             if (useOdometry) {
-                pose = odometry.update(getXVelocity(), getYVelocity(), gyro.getAngle(), Timer.getFPGATimestamp());
+                pose = odometry.update(getXVelocity(), getYVelocity(), pigeon.getYaw() + autoOffset, Timer.getFPGATimestamp());
             }
 
             if (Constants.REPORTING_DIAGNOSTICS) {
@@ -202,7 +203,6 @@ public class SwerveDriveSubsystem extends SubsystemBase {
             driveMotorHighestTemp = driveTemp;
             rotationMotorHighestTemp = rotTemp;
         }
-        
     }
 
     /**
@@ -210,7 +210,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setFieldOriented(boolean fieldOriented, double currentYaw) {
         this.fieldOriented = fieldOriented;
-        gyro.setYaw(currentYaw);
+        pigeon.setYaw(currentYaw);
     }
 
     /**
@@ -224,19 +224,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      * Gets the robot heading
      */
     public double getHeading() {
-        return gyro.getAngle();
+        return pigeon.getYaw();
     }
 
     /**
      * Resets the robot heading
      */
-    public void resetHeading() {
-        if (Constants.USING_PIGEON) {
-            gyro.setYaw(0);
-        } else {
-            gyro.reset();
-        }
-    }
 
     /**
      * Gets the current pose of the robot
@@ -245,12 +238,20 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         return pose;
     }
 
+    public void SetAutoOffset(double autoOffset){
+        this.autoOffset = autoOffset;
+    }
+
     /**
      * Resets the pose to the initial pose
      */
     public void resetPosition() {
         pose = initialPose;
         odometry.setPose(pose);
+    }
+
+    public void resetHeading(){
+        pigeon.setYaw(0);
     }
 
     /**

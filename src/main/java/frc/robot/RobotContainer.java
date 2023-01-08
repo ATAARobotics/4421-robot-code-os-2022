@@ -19,10 +19,11 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
-
+import edu.wpi.first.math.controller.ProfiledPIDController;
 // import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class RobotContainer {
 
@@ -32,23 +33,24 @@ public class RobotContainer {
     public Translation2d initialPosition = new Translation2d(0, 0);
 
     // Create hardware objects
-    private Gyro gyro;
+    private Pigeon pigeon;
     private final OI joysticks = new OI();
 
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final ArmSubsystem m_armSubsystem;
     private final ElevatorSubsystem m_elevatorSubsystem;
     private final ClawSubsystem m_clawSubsystem;
-    // Auto selector on SmartDashboard
+
+    // Auto Stuff
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    public static ProfiledPIDController rotationController = new ProfiledPIDController(0.9, 0, 0.001, new TrapezoidProfile.Constraints(Constants.MAXIMUM_ROTATIONAL_SPEED_AUTO, Constants.MAXIMUM_ROTATIONAL_ACCELERATION));
 
     public RobotContainer() {
         // Hardware-based objects
         // NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        gyro = new Gyro();
-        AutoPaths.CreateAutoPaths();
+        pigeon = new Pigeon();
 
-        m_swerveDriveSubsystem = new SwerveDriveSubsystem(gyro, initialPosition, "rio");
+        m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "rio");
         m_armSubsystem = new ArmSubsystem();
         m_elevatorSubsystem = new ElevatorSubsystem();
         m_clawSubsystem = new ClawSubsystem();
@@ -65,7 +67,12 @@ public class RobotContainer {
 
         configureBindings();
     }
+    public void AutoInit(double rotation){
+      rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
+      rotationController.reset(new TrapezoidProfile.State(rotation, 0.0));
+
+  }
     private void configureBindings() {
         joysticks.toggleFieldOriented.whenPressed(new InstantCommand(() -> {
             m_swerveDriveSubsystem.setFieldOriented(!m_swerveDriveSubsystem.getFieldOriented(), 0);
