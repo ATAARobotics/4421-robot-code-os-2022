@@ -35,10 +35,6 @@ public class Robot extends TimedRobot {
             SmartDashboard.putNumber("Rotation Controller Temp",
                     robotContainer.getSwerveDriveSubsystem().getRotationTemperature());
             SmartDashboard.putNumber("Robot Heading", robotContainer.getSwerveDriveSubsystem().getHeading());
-            SmartDashboard.putNumber("Front left ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
-            SmartDashboard.putNumber("Front right ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
-            SmartDashboard.putNumber("Back left ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
-            SmartDashboard.putNumber("Back right ticks", robotContainer.getSwerveDriveSubsystem().swerveModules[0].getDistance(true));
         }
     }
 
@@ -64,10 +60,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        Blackbox.getInstance().startLog();
-        robotContainer.getSwerveDriveSubsystem().setBrakes(true);
-        robotContainer.getSwerveDriveSubsystem().setFieldOriented(true, 0);
         m_autonomousCommand = robotContainer.getAutonomousChooser().getSelected();
+        robotContainer.AutoInit(0);
         m_autonomousCommand.schedule();
     }
 

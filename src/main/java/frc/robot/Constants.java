@@ -30,6 +30,7 @@ public class Constants {
 
     // Maximum rotational speed is in radians/second
     public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI;
+    public static final double MAXIMUM_ROTATIONAL_SPEED_AUTO = Math.PI;
     // USED ONLY IN AUTO - Maximum rotational acceleration is in
     // radians/second/second
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
