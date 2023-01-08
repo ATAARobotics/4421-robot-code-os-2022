@@ -81,16 +81,8 @@ public class RobotContainer {
           ).whenInactive(
             new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
           );
-        joysticks.ArmOverride.whenActive(
-          new RunCommand(m_armSubsystem::forceDown, m_armSubsystem)
-        ).whenInactive(
-          new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
-        );
-        joysticks.ArmReset.whenActive(
-          new RunCommand(m_armSubsystem::EncoderReset, m_armSubsystem)
-        ).whenInactive(
-          new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
-        );
+
+
         joysticks.ElevatorUp.whenActive(
             new RunCommand(m_elevatorSubsystem::elevatorUp, m_elevatorSubsystem)
           ).whenInactive(
