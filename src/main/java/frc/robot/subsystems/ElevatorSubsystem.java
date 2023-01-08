@@ -5,8 +5,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.BetterJoystick;
 import frc.robot.Constants; 
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -14,6 +16,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private RelativeEncoder ElevatorEncoder = ElevatorMotor.getEncoder();
     private DigitalInput ElevatorLowerStop = new DigitalInput(0);
     private DigitalInput ElevatorUpperStop = new DigitalInput(1);
+    private BetterJoystick gunnerStick = new BetterJoystick(1, 0);
     private int elevatorState = 0;
     private double elevatorSetPoint;
     @Override
@@ -24,41 +27,53 @@ public class ElevatorSubsystem extends SubsystemBase {
         if (elevatorState == 1) {    
             if (ElevatorEncoder.getPosition() >= Constants.ElevatorTop || ElevatorUpperStop.get() == false) {
                 ElevatorMotor.stopMotor();
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
             }else {
                 ElevatorMotor.set(1.0);
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
             }
         } else if(elevatorState == 2) {
             if ((ElevatorEncoder.getPosition() <= 0 || ElevatorEncoder.getPosition() > Constants.ElevatorTop + 30) || ElevatorLowerStop.get() == false) {
                 ElevatorMotor.stopMotor();
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
             } else {
                 ElevatorMotor.set(-1.0);
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
             }
         } else if(elevatorState == 3) {
             if(ElevatorLowerStop.get() == false){
                 ElevatorMotor.set(0);
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
             }{
                 ElevatorMotor.set(-1.0);
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
             }
         } else if (elevatorState == 4){
-            if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) + 0.5){
-                if (ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) + 3){
+            if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) + 3){
+                if (ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) + 10){
                     ElevatorMotor.set(-1.0);
+                    gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
                 }else{
                     ElevatorMotor.set(-1);
+                    gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
                 }
-            }else if(ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) - 0.5){
-                if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) - 3){
+            }else if(ElevatorEncoder.getPosition() <= (Constants.ElevatorTop * elevatorSetPoint) - 3){
+                if (ElevatorEncoder.getPosition() >= (Constants.ElevatorTop * elevatorSetPoint) - 10){
                     ElevatorMotor.set(1.0);
+                    gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
                 }else{
                     ElevatorMotor.set(1);
+                    gunnerStick.setRumble(RumbleType.kLeftRumble, 1);
                 }
             } else{
                 ElevatorMotor.set(0);
                 elevatorState = 0;
+                gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
             }
         } else
         {
             ElevatorMotor.set(0);
+            gunnerStick.setRumble(RumbleType.kLeftRumble, 0);
         }
     }
     public void setElevatorPostion(double elevatorSetPoint){

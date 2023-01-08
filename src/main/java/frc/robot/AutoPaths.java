@@ -1,104 +1,118 @@
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoPaths {
-    /*
-     * Path variable declarations, should be formatted as:
-     * 
-     * private Trajectory pathName;
-     */
+    
+    /*  
+        Path variable declarations, should be formatted as:
 
-    private static Trajectory test1;
-    private static Trajectory test2;
+        private AutoCommand pathName;
+    */
+    private AutoCommand straight;
+    private AutoCommand straight1;
+    private AutoCommand quadrant1LeftBall2;
+    private AutoCommand ball2Launchpad;
+    private AutoCommand fastRotation;
 
-    public static void CreateAutoPaths() {
+    public AutoPaths() {
+        /*  
+            Path creation, should be formatted as:
 
-        test1 = TrajectoryBuilder(
-                Math.PI / 2,
+            pathName = new AutoCommand(
+                rotationOffset, **DEFAULTS TO ZERO, THIS IS OPTIONAL**
                 Arrays.asList(
-                        new Translation2d(meterConversion(6), meterConversion(5.5)),
-                        new Translation2d(meterConversion(7), meterConversion(5.5))),
-                Math.PI / 2);
+                    new Translation2d(xStart, yStart),
+                    new Translation2d(xWaypoint1, yWaypoint1),
+                    new Translation2d(xWaypoint2, yWaypoint2),
+                    new Translation2d(xWaypoint3, yWaypoint3),
+                    ...
+                    new Translation2d(x, y),
+                ),
+                ingAngle
+            );
 
-        test2 = TrajectoryBuilder(
-                Math.PI / 2,
-                Arrays.asList(
-                        new Translation2d(meterConversion(7), meterConversion(5.5)),
-                        new Translation2d(meterConversion(7), meterConversion(6.5))),
-                Math.PI);
+            The rotationOffset term should only be included if this is the first path that will be executed in an auto program,
+            AND the robot will not be starting the match pointed straight ahead. If this is the case, this should be equal to
+            the heading of the robot, measured in radians, when the match starts.
+
+            The first Translation2d object MUST contain the position of the robot at the time that this command gets executed.
+            This should just be done using the previous x and y numbers as the xStart and yStart for any command that follows.
+
+            The ingAngle should be the angle that the robot will attempt to be at when the path is completed. The robot DOES NOT turn like a
+            differential drive would have to - over the course of the path, the robot will turn toward that angle, without regard to the current
+            direction of travel. This does have the drawback that if the path is too short, the turning may not be complete, and would simply stop.
+        */
+        fastRotation = new AutoCommand(
+            0,
+            Arrays.asList(
+                new Translation2d(5, 5),
+                new Translation2d(5, 6)
+            ),
+            Math.PI
+        );
+        straight = new AutoCommand(
+            Math.PI,
+            Arrays.asList(
+                new Translation2d(5, 5),
+                new Translation2d(5, 3)
+            ),
+            Math.PI/2
+        );
+        straight1 = new AutoCommand(
+            Math.PI/2,
+            Arrays.asList(
+                new Translation2d(5, 3),
+                new Translation2d(3, 3)
+            ),
+            Math.PI
+        );
+        quadrant1LeftBall2 = new AutoCommand(
+            -2.5724,
+            Arrays.asList(
+                new Translation2d(meterConversion(2.9323), meterConversion(5.0693)),
+                new Translation2d(meterConversion(2.0930), meterConversion(6.3812))
+            ),
+            -2.5724
+        );
+        ball2Launchpad = new AutoCommand(
+            Arrays.asList(
+                new Translation2d(meterConversion(2.0930), meterConversion(5.0693)),
+                new Translation2d(meterConversion(1), meterConversion(4.0))
+            ),
+            Math.PI/4
+        );
     }
 
-    public static Trajectory getTest1() {
-        return test1;
-    }
+    /*  
+        Getter functions for paths, formatted as:
 
-    public static Trajectory getTest2() {
-        return test2;
-    }
-
-    private static Trajectory TrajectoryBuilder(double rotationOffset, List<Translation2d> waypoints,
-            double targetAngle) {
-        // Configure the path to not exceed the maximum speed or acceleration specified
-        // in RobotMap
-        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(Constants.MAXIMUM_SPEED,
-                Constants.MAXIMUM_ACCELERATION);
-
-        // Store the waypoints for data logging purposes
-        if (Constants.AUTO_PATH_LOGGING_ENABLED) {
-            waypoints = new ArrayList<Translation2d>(waypoints);
+        public AutoCommand getPathName() {
+            return pathName;
         }
-
-        waypoints = new ArrayList<Translation2d>(waypoints);
-
-        // Get the first and last two points in this path. Some of these may be the
-        // same.
-        Translation2d firstPoint = waypoints.get(0);
-        Translation2d secondPoint = waypoints.get(1);
-        Translation2d secondLastPoint = waypoints.get(waypoints.size() - 2);
-        Translation2d lastPoint = waypoints.get(waypoints.size() - 1);
-
-        /**
-         * Get the angle that the robot should aim for and end with based on the angle
-         * to the second and last waypoint.
-         * The purpose of this is to prevent the robot from adding a slight bulge to the
-         * trajectory, as it thinks that
-         * the robot needs to move to be able to turn. Although this would be correct in
-         * a differential drive, it is
-         * unneccessary with a swerve - so this shaves off a little bit of time by going
-         * straight to the waypoints.
-         */
-        double firstRotation = Math.atan2(secondPoint.getY() - firstPoint.getY(),
-                secondPoint.getX() - firstPoint.getX());
-        double lastRotation = Math.atan2(lastPoint.getY() - secondLastPoint.getY(),
-                lastPoint.getX() - secondLastPoint.getX());
-
-        // Remove the first and last waypoints from the list, as we are going to
-        // manually specify their rotation
-        if (Constants.REPORTING_DIAGNOSTICS) {
-            SmartDashboard.putString("Waypoints", waypoints.toString());
-        }
-        waypoints.remove(0);
-        waypoints.remove(waypoints.size() - 1);
-
-        // Create the trajectory based on the waypoints and computed angles
-        return TrajectoryGenerator.generateTrajectory(new Pose2d(firstPoint, new Rotation2d(firstRotation)), waypoints,
-                new Pose2d(lastPoint, new Rotation2d(lastRotation)), trajectoryConfig);
+    */
+    public AutoCommand getFastRotation(){
+        return fastRotation;
+    }
+    public AutoCommand getStraight() {
+        return straight;
     }
 
-    // Convert meters to Jacob units
-    private static double meterConversion(double meters) {
+    public AutoCommand getStraight1() {
+        return straight1;
+    }
+    public AutoCommand GetQuadrant1LeftBall2(){
+        return quadrant1LeftBall2;
+    }
+
+    public AutoCommand GetBall2Launchpad(){
+        return ball2Launchpad;
+    }
+
+    //Convert meters to Jacob units
+    private double meterConversion(double meters) {
         return (0.5 * meters) + (0.1811 * Math.signum(meters));
     }
-
 }

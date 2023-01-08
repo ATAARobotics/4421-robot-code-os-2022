@@ -30,6 +30,7 @@ public class Constants {
 
     // Maximum rotational speed is in radians/second
     public static final double MAXIMUM_ROTATIONAL_SPEED = Math.PI;
+    public static final double MAXIMUM_ROTATIONAL_SPEED_AUTO = Math.PI;
     // USED ONLY IN AUTO - Maximum rotational acceleration is in
     // radians/second/second
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
@@ -61,7 +62,7 @@ public class Constants {
     // Sensor Ports
 
     // Solenoid Ports
-    public static final int[] CLAW_PNEUMATIC = { 6 , 7 }; // Change Later when claw is built
+    public static final int[] CLAW_PNEUMATIC = { 4 , 5 , 6 , 7 }; // Change Later when claw is built
     // Sensor config
 
     // Drive encoder ticks per meter
@@ -70,17 +71,13 @@ public class Constants {
 
     };
 
-    public static final int PrimaryArmMotorID = 21;
-    // 9000 is not the ID
-    public static final int SecondaryArmMotorID = 24;
-
     public static final int ArmMotorID = 21;
-    public static final int ArmMotorID2 = 24;
+    // 9000 is not the ID
     public static final int ElevatorMotor = 22;
 
     public static final int ArmCANCoderID = 23;
     // Maximum arm rotation (in degrees)
-    public static final double ArmMaxAngle = 200;
+    public static final double ArmMaxAngle = 300;
     // Minimum arm rotation (in degrees)
     public static final double ArmMinAngle = 5;
 
