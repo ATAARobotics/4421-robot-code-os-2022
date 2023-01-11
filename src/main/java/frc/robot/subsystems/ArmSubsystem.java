@@ -31,21 +31,10 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Arm Upper Stop", ArmUpperStop.get());
         switch (armState){
             case 1:
-                if ( ArmUpperStop.get() == true) {
-                    ArmMotor.set(0.20);
-
-                }
-                else {
-                    ArmMotor.set(0);
-                }
+                ArmMotor.set(0.50);
                 break;
             case 2:
-                if (ArmLowerStop.get() == true) {
-                    ArmMotor.set(-0.20);
-                }
-                else {
-                    ArmMotor.set(0);
-                }
+                ArmMotor.set(-0.50);
                 break;
             case 3:
                 ArmMotor.set(-0.20);

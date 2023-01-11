@@ -42,7 +42,7 @@ public class SwerveModule {
     private double reverseMultiplier = 1.0;
 
     // Create a PID for controlling the angle of the module
-    private PIDController angleController = new PIDController(0.4, 0.0, 0.001);
+    private PIDController angleController = new PIDController(0.5, 0.01, 0.001);
 
     // Create a PID for controlling the velocity of the module
     private PIDController velocityController = new PIDController(0.45, 0.0, 0.001);

@@ -37,7 +37,7 @@ public class Constants {
 
     // Swerve offset
     public static final double[] ANGLE_OFFSET = new double[] {
-            0.3528, -3.0526, -2.4252, -2.5863
+        0.357417523577354, -3.0526, 0.73170883582145, 0.6442719
     };
 
     /*
@@ -67,7 +67,7 @@ public class Constants {
 
     // Drive encoder ticks per meter
     public static final double[] TICKS_PER_METER = new double[] {
-        42719.3171, 43277.6126, 43235.0041, 43083.3683
+        42719.3171, 40277.6126, 43235.0041, 43083.3683
 
     };
 

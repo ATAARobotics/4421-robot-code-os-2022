@@ -72,7 +72,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[1], bus), Constants.ANGLE_OFFSET[1], false,
                 Constants.TICKS_PER_METER[1], 1, "Front Right");
         SwerveModule rearLeftModule = new SwerveModule(driveMotors[2], rotationMotors[2],
-                new CANCoder(Constants.ROTATION_ENCODERS_ID[2], bus), Constants.ANGLE_OFFSET[2], true,
+                new CANCoder(Constants.ROTATION_ENCODERS_ID[2], bus), Constants.ANGLE_OFFSET[2], false,
                 Constants.TICKS_PER_METER[2], 2, "Rear Left");
         SwerveModule rearRightModule = new SwerveModule(driveMotors[3], rotationMotors[3],
                 new CANCoder(Constants.ROTATION_ENCODERS_ID[3], bus), Constants.ANGLE_OFFSET[3], false,
