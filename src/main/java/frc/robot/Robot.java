@@ -76,7 +76,6 @@ public class Robot extends TimedRobot {
 
         Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);
         Blackbox.getInstance().addLog("Field Oriented", robotContainer.getSwerveDriveSubsystem()::getFieldOriented);
-
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
             m_autonomousCommand = null;

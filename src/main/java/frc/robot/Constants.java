@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * A centralized file that keeps track of constants of the robot, such as device
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj.Preferences;
  * this class is constants, each hardware class defines its own motors and
  * whatnot
  */
+
 public class Constants {
     // Disables some safeties and enables logging of warnings we expect and know
     // about during development
@@ -36,8 +38,16 @@ public class Constants {
     public static final double MAXIMUM_ROTATIONAL_ACCELERATION = Math.PI;
 
     // Swerve offset
+    
     public static final double[] ANGLE_OFFSET = new double[] {
-        0.357417523577354, -3.0526, 0.73170883582145, 0.6442719
+        0, 0, 0, 0
+        // Nate's New Offset Code DOES NOT WORK
+        // SmartDashboard.getNumber("Front Left Angle", -0)*-1 + SmartDashboard.getNumber("Front Left Angle Target", 0),
+        // SmartDashboard.getNumber("Front Right Angle", 0)*-1 + SmartDashboard.getNumber("Front Right Angle Target", 0),
+        // SmartDashboard.getNumber("Back Left Angle", -0)*-1 + SmartDashboard.getNumber("Back Left Angle Target", 0),
+        // SmartDashboard.getNumber("Back Right Angle", -0)*-1 + SmartDashboard.getNumber("Back Right Angle Target", 0)
+        // Manual offsets 
+        // 0.357417523577354, -3.0826, 0.73170883582145, 0.6442719
     };
 
     /*

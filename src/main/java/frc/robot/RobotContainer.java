@@ -80,7 +80,7 @@ public class RobotContainer {
             m_swerveDriveSubsystem.setFieldOriented(!m_swerveDriveSubsystem.getFieldOriented(), 0);
         }));
         joysticks.ArmOverride.whenActive(
-          new DriveCommand(m_swerveDriveSubsystem, ()-> 0,()-> -0.5,()-> 0)
+          new DriveCommand(m_swerveDriveSubsystem, ()-> 0,()-> -0.2,()-> 0)
         ).whenInactive(new DriveCommand(m_swerveDriveSubsystem, joysticks::getXVelocity, joysticks::getYVelocity,
                           joysticks::getRotationVelocity, joysticks::getSpeed, () -> 0.8 * joysticks.getSpeed()));
         joysticks.ArmUp.whenActive(
