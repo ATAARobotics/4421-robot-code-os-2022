@@ -128,6 +128,10 @@ public class RobotContainer {
 
         joysticks.extendClaw
           .toggleWhenPressed(new InstantCommand(m_clawSubsystem::clawExtend, m_clawSubsystem));
+
+        joysticks.toggleFieldOriented.whenPressed(
+          new InstantCommand(()-> m_swerveDriveSubsystem.setFieldOriented(true, 0))
+        );
     }
 
     public OI getOI() {

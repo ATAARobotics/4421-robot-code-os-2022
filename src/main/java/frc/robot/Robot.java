@@ -72,6 +72,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        if(!Constants.FIELD_ORIENTED){
+            robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
+        }
         Blackbox.getInstance().startLog();
 
         Blackbox.getInstance().addLog("Gyro Reading", robotContainer.getSwerveDriveSubsystem()::getHeading);
