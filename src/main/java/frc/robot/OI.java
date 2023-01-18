@@ -24,6 +24,7 @@ class OI {
     public JoystickButton ArmDown;
     public JoystickButton ArmOverride;
     public JoystickButton ArmReset;
+    public JoystickButton AutoBalance;
     public JoystickButton ElevatorUp;
     public JoystickButton ElevatorDown;
     public JoystickButton ElevatorOverride;
@@ -60,6 +61,7 @@ class OI {
         ArmDown = gunnerStick.getWPIJoystickButton("ArmDown");
         ArmOverride = driveStick.getWPIJoystickButton("ArmOverride");
         ArmReset = driveStick.getWPIJoystickButton("ArmReset");
+        AutoBalance = driveStick.getWPIJoystickButton("AutoBalance");
         ElevatorUp = gunnerStick.getWPIJoystickButton("ElevatorUp");
         ElevatorDown = gunnerStick.getWPIJoystickButton("ElevatorDown");
         ElevatorOverride = driveStick.getWPIJoystickButton("ElevatorOverride");

@@ -88,6 +88,9 @@ public class Robot extends TimedRobot {
         if (!Constants.FIELD_ORIENTED) {
             robotContainer.getSwerveDriveSubsystem().setFieldOriented(false, 0);
         }
+
+        robotContainer.getSwerveDriveSubsystem().pigeon.resetYaw();
+        robotContainer.getSwerveDriveSubsystem().pigeon.resetPitch();
     }
 
     @Override

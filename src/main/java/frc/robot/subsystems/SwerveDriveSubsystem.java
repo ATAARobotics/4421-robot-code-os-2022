@@ -16,7 +16,7 @@ import frc.robot.SwerveModule;
 import frc.robot.SwerveOdometry;
 
 public class SwerveDriveSubsystem extends SubsystemBase {
-    private Pigeon pigeon;
+    public Pigeon pigeon;
 
     // Whether the swerve should be field-oriented
      boolean fieldOriented = false;

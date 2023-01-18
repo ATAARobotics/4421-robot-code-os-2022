@@ -109,4 +109,8 @@ public class Constants {
     // Set this to true if you want to visualize the robot's movement during auto -
     // talk to Jacob if you have no idea what this does
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
+
+    public static final double BEAM_BALANACED_DRIVE_KP = 0.015;
+    public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
+    public static final double BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES = 1;
 }

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.commands.AutoBalance;
 //swerve commands and subsystems
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.auto.*;
@@ -94,7 +94,9 @@ public class RobotContainer {
           ).whenInactive(
             new InstantCommand(m_armSubsystem::stop, m_armSubsystem)
           );
-
+        joysticks.AutoBalance.whenHeld(
+          new AutoBalance(m_swerveDriveSubsystem)
+        );
 
         joysticks.ElevatorUp.whenActive(
             new RunCommand(m_elevatorSubsystem::elevatorUp, m_elevatorSubsystem)
