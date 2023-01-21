@@ -34,7 +34,6 @@ public class RobotContainer {
     // Create hardware objects
     private Pigeon pigeon;
     private final OI joysticks = new OI();
-
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final ArmSubsystem m_armSubsystem;
     private final ClawSubsystem m_clawSubsystem;
@@ -103,7 +102,7 @@ public class RobotContainer {
         joysticks.extendClaw
           .toggleWhenPressed(new InstantCommand(m_clawSubsystem::clawExtend, m_clawSubsystem));
 
-        joysticks.toggleFieldOriented.whenPressed(
+        joysticks.toggleFieldOriented.whenReleased(
           new InstantCommand(()-> m_swerveDriveSubsystem.setFieldOriented(true, 0))
         );
     }

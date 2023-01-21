@@ -110,7 +110,7 @@ public class Constants {
     // talk to Jacob if you have no idea what this does
     public static final boolean AUTO_PATH_LOGGING_ENABLED = false;
 
-    public static final double BEAM_BALANACED_DRIVE_KP = 0.030;
+    public static final double BEAM_BALANACED_DRIVE_KP = 0.020;
     public static final double BEAM_BALANCED_GOAL_DEGREES = 0;
     public static final double BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES = 1;
 }

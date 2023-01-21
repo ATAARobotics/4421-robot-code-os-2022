@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Pigeon;
+import frc.robot.RobotContainer;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import frc.robot.SwerveOdometry;
@@ -19,7 +20,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     public Pigeon pigeon;
 
     // Whether the swerve should be field-oriented
-     boolean fieldOriented = false;
+     public static boolean fieldOriented = false;
 
     // An array of all the modules on the swerve drive
     private SwerveModule[] swerveModules;
@@ -44,7 +45,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private double xVelocity;
     private double yVelocity;
     private double rotationVelocity;
-
+    public static boolean shouldBeOriented;
     private double[] velocities;
     private double[] angles;
 
@@ -210,6 +211,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
      */
     public void setFieldOriented(boolean fieldOriented, double currentYaw) {
         System.out.println("field oriented");
+        shouldBeOriented = true;
         this.fieldOriented = fieldOriented;
         pigeon.setYaw(currentYaw);
     }
