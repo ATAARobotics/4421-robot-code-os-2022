@@ -17,7 +17,6 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.auto.*;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 // import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -38,7 +37,6 @@ public class RobotContainer {
 
     private final SwerveDriveSubsystem m_swerveDriveSubsystem;
     private final ArmSubsystem m_armSubsystem;
-    private final ElevatorSubsystem m_elevatorSubsystem;
     private final ClawSubsystem m_clawSubsystem;
     private final AutoPaths m_autoPaths;
 
@@ -53,7 +51,6 @@ public class RobotContainer {
 
         m_swerveDriveSubsystem = new SwerveDriveSubsystem(pigeon, initialPosition, "rio");
         m_armSubsystem = new ArmSubsystem();
-        m_elevatorSubsystem = new ElevatorSubsystem();
         m_clawSubsystem = new ClawSubsystem();
         m_autoPaths = new AutoPaths();
 
@@ -98,32 +95,7 @@ public class RobotContainer {
           new AutoBalance(m_swerveDriveSubsystem)
         );
 
-        joysticks.ElevatorUp.whenActive(
-            new RunCommand(m_elevatorSubsystem::elevatorUp, m_elevatorSubsystem)
-          ).whenInactive(
-            new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
-          );
-      
-        joysticks.ElevatorDown.whenActive(
-            new RunCommand(m_elevatorSubsystem::elevatorDown, m_elevatorSubsystem)
-          ).whenInactive(
-            new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
-          );
-
-        joysticks.ElevatorOverride.whenActive(
-            new RunCommand(m_elevatorSubsystem::elevatorOverride, m_elevatorSubsystem)
-          ).whenInactive(
-            new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
-          );
-
-        joysticks.ElevatorReset.whenActive(
-            new RunCommand(m_elevatorSubsystem::elevatorReset, m_elevatorSubsystem)
-          ).whenInactive(
-            new InstantCommand(m_elevatorSubsystem::stop, m_elevatorSubsystem)
-          );
-          joysticks.ElevatorHalfwayPoint.whenActive(
-            new RunCommand(() -> m_elevatorSubsystem.setElevatorPostion(0.5), m_elevatorSubsystem)
-          );
+        
         
         joysticks.toggleClaw
           .toggleWhenPressed(new StartEndCommand(m_clawSubsystem::clawReverse, m_clawSubsystem::clawForward, m_clawSubsystem));

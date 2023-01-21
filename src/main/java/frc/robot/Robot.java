@@ -104,6 +104,8 @@ public class Robot extends TimedRobot {
             SmartDashboard.putNumber("Rotation", robotContainer.getOI().getRotationVelocity());
             SmartDashboard.putNumber("Slider", robotContainer.getOI().getSpeed());
         }
+
+        SmartDashboard.putNumber("Pitch", robotContainer.getSwerveDriveSubsystem().pigeon.getPitch());
     }
 
     @Override

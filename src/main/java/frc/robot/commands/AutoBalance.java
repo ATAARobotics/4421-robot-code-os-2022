@@ -38,8 +38,8 @@ public class AutoBalance extends CommandBase {
         // imbalances
 
         // Limit the max power
-        if (Math.abs(drivePower) > 0.35) {
-            drivePower = Math.copySign(0.35, drivePower);
+        if (Math.abs(drivePower) > 0.5) {
+            drivePower = Math.copySign(0.5, drivePower);
         }
 
         swerveSubsystem.setSwerveDrive(0, drivePower, 0, false);
@@ -57,9 +57,9 @@ public class AutoBalance extends CommandBase {
     }
 
     // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return Math.abs(error) < Constants.BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES;
-    }
+    //@Override
+    //public boolean isFinished() {
+        //return Math.abs(error) < Constants.BEAM_BALANCED_ANGLE_TRESHOLD_DEGREES;
+    //}
 
 }
